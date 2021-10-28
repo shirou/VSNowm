@@ -1,0 +1,190 @@
+{
+  "name": "vsnowm",
+  "displayName": "VSNowm",
+  "description": "Personal note taking and task management tool",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.61.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shirou/VSNowm.git"
+  },
+  "license": "MIT",
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "vsnowm",
+    "notes",
+    "note taking",
+    "task"
+  ],
+  "activationEvents": [
+    "onCommand:vsnowm.newNote",
+    "onCommand:vsnowm.listNotes",
+    "onCommand:vsnowm.listTags",
+    "onCommand:vsnowm.setupNotes",
+    "onCommand:vsnowm.openNoteFolder",
+    "onCommand:vsnowm.sync",
+    "onCommand:vsnowm.search",
+    "onView:vsnowm"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "configuration": {
+      "type": "object",
+      "title": "VSNowm Configuration",
+      "properties": {
+        "vsnowm.defaultNoteRoot": {
+          "type": "string",
+          "default": "~/notes",
+          "description": "Path to directory to save notes. Use ~/ to denote a relative path from home folder. If you don't want to sync across machines, you can add vsnowm.defaultNoteRoot to settingsSync.ignoredSettings."
+        },
+        "vsnowm.defaultNoteFilePath": {
+          "type": "string",
+          "default": "{year}/{month}/{day}/{dt}.{ext}",
+          "description": "Default note file path. defaultDateFormat is used on {dt}."
+        },
+        "vsnowm.defaultDateFormat": {
+          "type": "string",
+          "default": "YYYY-MM-DDTHH:mm:ss",
+          "description": "Formatted datetime."
+        },
+        "vsnowm.defaultExt": {
+          "type": "string",
+          "default": "md",
+          "description": "Default note file extention."
+        },
+        "vsnowm.listRecentLimit": {
+          "type": "number",
+          "default": 15,
+          "description": "Number of recent files to show when running command `List Notes`."
+        },
+        "vsnowm.ignorePatterns": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "^\\."
+          ],
+          "description": "Regular expressions for file names to ignore when parsing documents in note folder."
+        },
+        "vsnowm.treeviewHideTags": {
+          "type": "boolean",
+          "default": false,
+          "description": "Hide the tags section in the sidebar. Requires application restart."
+        },
+        "vsnowm.treeviewHideFiles": {
+          "type": "boolean",
+          "default": false,
+          "description": "Hide the files section in the sidebar. Requires application restart."
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "vsnowm.newNote",
+        "title": "VSNowm: Create a New Note"
+      },
+      {
+        "command": "vsnowm.listNotes",
+        "title": "VSNowm: List recent notes"
+      },
+      {
+        "command": "vsnowm.listNotes",
+        "title": "VSNowm: Open note"
+      },
+      {
+        "command": "vsnowm.listTags",
+        "title": "VSNowm: List tags"
+      },
+      {
+        "command": "vsnowm.openNoteFolder",
+        "title": "VSNowm: Open Note Folder"
+      },
+      {
+        "command": "vsnowm.setupNotes",
+        "title": "VSNowm: Run setup"
+      },
+      {
+        "command": "vsnowm.search",
+        "title": "VSNowm: Search notes"
+      },
+      {
+        "command": "vsnowm.refreshVSNotesView",
+        "title": "refresh",
+        "icon": {
+          "light": "./media/light/sync.svg",
+          "dark": "./media/dark/sync.svg"
+        }
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "vsnowm.newNote",
+        "key": "",
+        "mac": ""
+      }
+    ],
+    "views": {
+      "vsnotes": [
+        {
+          "id": "vsnowm",
+          "name": "VS Nowm"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "vsnowm",
+          "title": "VS Nowm",
+          "icon": "./media/icon/vsnotes_icon.svg"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "vsnowm.refreshVSNotesView",
+          "when": "view == vsnowm",
+          "group": "navigation"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "fix": "npm run fix:prettier && npm run fix:eslint",
+    "fix:eslint": "eslint . --ext .ts --fix",
+    "fix:prettier": "prettier --write .",
+    "test": "DISPLAY=:99.0 node ./out/test/runTest.js"
+  },
+  "dependencies": {
+    "dayjs": "^1.10.7",
+    "fs-extra": "^10.0.0",
+    "gray-matter": "^4.0.3",
+    "klaw": "^4.0.1",
+    "prettier": "^2.4.1"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^9.0.13",
+    "@types/glob": "^7.2.0",
+    "@types/mocha": "^9.0.0",
+    "@types/node": "16.x",
+    "@types/vscode": "^1.61.0",
+    "@typescript-eslint/eslint-plugin": "^5.2.0",
+    "@typescript-eslint/parser": "^5.2.0",
+    "@vscode/test-electron": "^1.6.2",
+    "eslint": "^8.1.0",
+    "glob": "^7.2.0",
+    "mocha": "^9.1.3",
+    "typescript": "^4.4.4"
+  }
+}
