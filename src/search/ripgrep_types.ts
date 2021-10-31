@@ -1,7 +1,7 @@
-import { ExecException } from 'child_process';
+import { ExecException } from "child_process";
 
 type StringSearchOptions = {
-  string: string;
+  query: string;
 };
 
 type RegexSearchOptions = {
@@ -23,7 +23,7 @@ export type RipgrepJsonSubmatch = {
 };
 
 export type RipGrepJsonMatch = {
-  type: 'match';
+  type: "match";
   data: {
     path: {
       text: string;
@@ -37,7 +37,7 @@ export type RipGrepJsonMatch = {
   };
 };
 
-export type Match = RipGrepJsonMatch['data'];
+export type Match = RipGrepJsonMatch["data"];
 
 export class RipGrepError {
   private error: ExecException;

@@ -1,7 +1,10 @@
 import * as path from "path";
 import * as os from "os";
+import * as vscode from "vscode";
 
 import * as dayjs from "dayjs";
+import { WSAEWOULDBLOCK } from "constants";
+import { stringify } from "querystring";
 
 export const resolveRoot = (filepath?: string) => {
   if (!filepath) {
@@ -57,3 +60,64 @@ export const templateString = (
   }
   return content;
 };
+
+export type FileItem = {
+  path: string;
+  fileType: vscode.FileType;
+};
+
+export type FrontMatterType = {
+  title?: string;
+  created?: string;
+  updated?: string;
+};
+
+export const walk = async (
+  parent: string[],
+  dir: vscode.Uri,
+  ext: string
+): Promise<FileItem[]> => {
+  const f = await vscode.workspace.fs.readDirectory(dir);
+
+  const files = [] as FileItem[];
+  for (const [filePath, fileType] of f) {
+    switch (fileType) {
+      case vscode.FileType.File:
+        if (filePath.endsWith(ext)) {
+          files.push({
+            path: path.join(...parent, filePath),
+            fileType: fileType,
+          });
+        }
+        break;
+      case vscode.FileType.Directory:
+        const p = path.join(...parent, filePath);
+        const nextDir = vscode.Uri.file(p);
+        files.push({
+          path: p,
+          fileType: fileType,
+        });
+        const f = await walk(parent.concat(filePath), nextDir, ext);
+        files.push(...f);
+        break;
+    }
+  }
+  return files;
+};
+
+/*
+const walk = async (folder: vscode.Uri): Promise<string[]> => {
+  let total = 0;
+  let count = 0;
+
+  for (const [name, type] of await vscode.workspace.fs.findFiles(folder)) {
+      if (type === vscode.FileType.File) {
+          const filePath = path.join(folder.path, name);
+          const stat = await vscode.workspace.fs.stat(folder.with({ path: filePath }));
+          total += stat.size;
+          count += 1;
+      }
+  }
+  return { total, count };
+}
+*/

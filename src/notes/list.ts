@@ -1,23 +1,34 @@
-
 import * as vscode from "vscode";
-import * as fs from "fs-extra";
 import * as path from "path";
-import {
-    resolveRoot,
-  } from "./utils";
+import { resolveRoot } from "../utils";
 
-import { ripGrep } from './ripgrep';
+import { newSearch } from "../search/";
 
 export const listNotes = async () => {
   const config = vscode.workspace.getConfiguration("vsnowm");
   const noteRoot = resolveRoot(config.get("defaultNoteRoot"));
-  const listRecentLimit = config.get('listRecentLimit');
-  const ignorePattern = config.get('ignorePatterns');
-  const noteFolderLen = noteRoot.length;
+  const listRecentLimit = config.get("listRecentLimit");
+  const ignorePattern = config.get("ignorePatterns") as string;
 
+  const search = newSearch("ripgrep");
 
-  const match = await ripGrep(noteRoot, "title:");
-}
+  let files = [];
+
+  try {
+    const opts = {
+      query: "title:",
+    };
+    const match = await search(noteRoot, opts);
+
+    files.push(
+      match.map((item) => {
+        return path.relative(noteRoot, item.path.text);
+      })
+    );
+  } catch (err) {
+    console.log(err);
+  }
+};
 
 /*
 module.exports = function () {

@@ -1,9 +1,18 @@
 import * as vscode from "vscode";
-import { newNote } from "./newNote";
-import { listNotes } from "./listNotes";
+import { newNote } from "./notes/new";
+import { listNotes } from "./notes/list";
+import { openSearch } from "./openSearch";
+import { NoteTreeView } from "./treeview/note";
+
+const openUrl = (url: string) => {
+  vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(url));
+};
 
 export const activate = (context: vscode.ExtensionContext) => {
-  console.log("Congratulations, your extension \"vsnowm\" is now active!");
+  const nodeTv = new NoteTreeView();
+  vscode.window.createTreeView("vsnowm.notes", {
+    treeDataProvider: nodeTv,
+  });
 
   context.subscriptions.push(
     vscode.commands.registerCommand("vsnowm.newNote", newNote),
@@ -12,7 +21,11 @@ export const activate = (context: vscode.ExtensionContext) => {
     vscode.commands.registerCommand("vsnowm.setupNotes", empty),
     vscode.commands.registerCommand("vsnowm.openNoteFolder", empty),
     vscode.commands.registerCommand("vsnowm.sync", empty),
-    vscode.commands.registerCommand("vsnowm.search", empty)
+    vscode.commands.registerCommand("vsnowm.search", openSearch),
+    vscode.commands.registerCommand("vsnowm.refreshNoteView", () =>
+      nodeTv.refresh()
+    ),
+    vscode.commands.registerCommand("vsnowm.openNote", openUrl)
   );
 };
 

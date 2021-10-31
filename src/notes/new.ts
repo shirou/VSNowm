@@ -1,16 +1,16 @@
 import * as vscode from "vscode";
-import * as fs from "fs-extra";
 import * as path from "path";
+import { TextEncoder } from "util";
 import {
   resolveRoot,
   resolveFilePath,
   getReplacer,
   templateString,
-} from "./utils";
+} from "../utils";
 
 const defaultTemplate = `---
 date: {dt}
-title:
+title: 
 ---
 `;
 
@@ -49,55 +49,41 @@ const createNote = async (noteRoot: string) => {
   );
 
   // Create the file
-  const filePath = await createFile(absFilePath);
+  const wsedit = new vscode.WorkspaceEdit();
+  const uri = vscode.Uri.file(absFilePath);
+  await wsedit.createFile(uri);
+  await vscode.workspace.applyEdit(wsedit);
 
-  if (typeof filePath !== "string") {
-    console.error("Invalid file path");
-    return false;
-  }
-
-  const editor = await vscode.window.showTextDocument(
-    vscode.Uri.file(filePath),
-    {
-      preserveFocus: false,
-      preview: false,
-    }
-  );
-  console.log("Note created successfully: ", filePath);
+  // Open the file
+  const editor = await vscode.window.showTextDocument(uri, {
+    preserveFocus: false,
+    preview: false,
+  });
+  console.log("Note created successfully: ", absFilePath);
   const template = await readTemplate(noteRoot);
   const replacer = getReplacer(defaultDateFormat, defaultExt);
-  const compiled = templateString(template, replacer);
+  const compiled = templateString(template!, replacer);
   editor.edit((edit) => {
     edit.insert(new vscode.Position(0, 0), compiled);
   });
 };
 
-const createFile = (filePath: string) => {
-  return new Promise((resolve, reject) => {
-    if (!filePath) {
-      reject();
-    }
-    // fs-extra
-    fs.ensureFile(filePath)
-      .then(() => {
-        resolve(filePath);
-      })
-      .catch((err: any) => {
-        reject(err);
-      });
-  });
-};
-
-const readTemplate = (noteRoot: string) => {
+const readTemplate = async (noteRoot: string) => {
   const templateFile = path.join(noteRoot, "templates", "default.md");
-  return fs.pathExists(templateFile).then((exists: boolean) => {
-    if (exists) {
-      return fs.readFile(templateFile, "utf8");
-    } else {
-      const dir = path.dirname(templateFile);
-      fs.ensureDir(dir);
-      fs.writeFile(templateFile, defaultTemplate);
+  const uri = vscode.Uri.file(templateFile);
+
+  try {
+    const f = await vscode.workspace.fs.readFile(uri);
+    return f.toString();
+  } catch (err: any) {
+    // TODO: Check error
+    // err instanceof vscode.FileSystemError.FileNotFound occured error
+    if (err) {
+      await vscode.workspace.fs.writeFile(
+        uri,
+        new TextEncoder().encode(defaultTemplate)
+      );
       return defaultTemplate;
     }
-  });
+  }
 };

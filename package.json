@@ -26,9 +26,11 @@
     "onCommand:vsnowm.listTags",
     "onCommand:vsnowm.setupNotes",
     "onCommand:vsnowm.openNoteFolder",
+    "onCommand:vsnowm.openNote",
     "onCommand:vsnowm.sync",
     "onCommand:vsnowm.search",
-    "onView:vsnowm"
+    "onView:vsnowm.notes",
+    "onView:vsnowm.tasks"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -93,16 +95,16 @@
         "title": "VSNowm: List recent notes"
       },
       {
-        "command": "vsnowm.listNotes",
-        "title": "VSNowm: Open note"
-      },
-      {
         "command": "vsnowm.listTags",
         "title": "VSNowm: List tags"
       },
       {
         "command": "vsnowm.openNoteFolder",
         "title": "VSNowm: Open Note Folder"
+      },
+      {
+        "command": "vsnowm.openNote",
+        "title": "VSNowm: Open a note"
       },
       {
         "command": "vsnowm.setupNotes",
@@ -113,11 +115,11 @@
         "title": "VSNowm: Search notes"
       },
       {
-        "command": "vsnowm.refreshVSNotesView",
-        "title": "refresh",
+        "command": "vsnowm.refreshNoteView",
+        "title": "refresh Note",
         "icon": {
-          "light": "./media/light/sync.svg",
-          "dark": "./media/dark/sync.svg"
+          "light": "./media/icon/light/sync.svg",
+          "dark": "./media/icon/dark/sync.svg"
         }
       }
     ],
@@ -129,10 +131,14 @@
       }
     ],
     "views": {
-      "vsnotes": [
+      "vsnowm": [
         {
-          "id": "vsnowm",
-          "name": "VS Nowm"
+          "id": "vsnowm.notes",
+          "name": "Notes"
+        },
+        {
+          "id": "vsnowm.tasks",
+          "name": "Tasks"
         }
       ]
     },
@@ -141,16 +147,22 @@
         {
           "id": "vsnowm",
           "title": "VS Nowm",
-          "icon": "./media/icon/vsnotes_icon.svg"
+          "icon": "./media/icon/vsnowm_icon.svg"
         }
       ]
     },
     "menus": {
       "view/title": [
         {
-          "command": "vsnowm.refreshVSNotesView",
-          "when": "view == vsnowm",
+          "command": "vsnowm.refreshNoteView",
+          "when": "view == vsnowm.notes",
           "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "vsnowm.openNote",
+          "when": "view == vsnowm.notes && viewItem == file"
         }
       ]
     }
@@ -171,7 +183,8 @@
     "fs-extra": "^10.0.0",
     "gray-matter": "^4.0.3",
     "klaw": "^4.0.1",
-    "prettier": "^2.4.1"
+    "prettier": "^2.4.1",
+    "vscode-ripgrep": "^1.12.1"
   },
   "devDependencies": {
     "@types/fs-extra": "^9.0.13",
