@@ -25,7 +25,7 @@ class NoteTreeItem extends vscode.TreeItem {
   };
 }
 
-export class NoteTreeView implements vscode.TreeDataProvider<NoteTreeItem> {
+export class NotesTreeView implements vscode.TreeDataProvider<NoteTreeItem> {
   noteRoot: string;
   // ignorePattern: RegExp;
   hideTags: boolean | undefined;

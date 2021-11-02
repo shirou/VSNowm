@@ -27,13 +27,23 @@ This extension contributes the following settings:
 - `myExtension.enable`: enable/disable this extension
 - `myExtension.thing`: set to `blah` to do something
 
+## TODO Format
+
+- Each column has tasks that start with a checkbox sign `- [ ]`.
+- Completed column name must contain `[x]`.
+- Date should be `YYYY-mm-dd`.
+
+```
+- [ ] Task title ~3d #type yyyy-mm-dd
+```
+
+### Limitation
+
+- No subtasks
+
 ## Known Issues
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
 ## Release Notes
-
-Users appreciate release notes as you update your extension.
 
 ### 1.0.0
 

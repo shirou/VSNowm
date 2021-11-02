@@ -2,7 +2,8 @@ import * as vscode from "vscode";
 import * as path from "path";
 import { resolveRoot } from "../utils";
 
-import { newSearch } from "../search/";
+import { newSearcher } from "../search/";
+import { Match } from "../search/ripgrep_types";
 
 export const listNotes = async () => {
   const config = vscode.workspace.getConfiguration("vsnowm");
@@ -10,24 +11,26 @@ export const listNotes = async () => {
   const listRecentLimit = config.get("listRecentLimit");
   const ignorePattern = config.get("ignorePatterns") as string;
 
-  const search = newSearch("ripgrep");
+  const search = newSearcher("ripgrep", "");
 
+  /*
   let files = [];
 
   try {
     const opts = {
       query: "title:",
     };
-    const match = await search(noteRoot, opts);
+    const match = await search.searchTodo(noteRoot, opts);
 
     files.push(
-      match.map((item) => {
+      match.map((item: Match) => {
         return path.relative(noteRoot, item.path.text);
       })
     );
   } catch (err) {
     console.log(err);
   }
+  */
 };
 
 /*

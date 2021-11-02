@@ -99,6 +99,10 @@
         "title": "VSNowm: List tags"
       },
       {
+        "command": "vsnowm.listTodos",
+        "title": "VSNowm: List TODO"
+      },
+      {
         "command": "vsnowm.openNoteFolder",
         "title": "VSNowm: Open Note Folder"
       },
@@ -117,6 +121,14 @@
       {
         "command": "vsnowm.refreshNoteView",
         "title": "refresh Note",
+        "icon": {
+          "light": "./media/icon/light/sync.svg",
+          "dark": "./media/icon/dark/sync.svg"
+        }
+      },
+      {
+        "command": "vsnowm.refreshTasksView",
+        "title": "refresh Tasks",
         "icon": {
           "light": "./media/icon/light/sync.svg",
           "dark": "./media/icon/dark/sync.svg"
@@ -156,6 +168,11 @@
         {
           "command": "vsnowm.refreshNoteView",
           "when": "view == vsnowm.notes",
+          "group": "navigation"
+        },
+        {
+          "command": "vsnowm.refreshTasksView",
+          "when": "view == vsnowm.tasks",
           "group": "navigation"
         }
       ],

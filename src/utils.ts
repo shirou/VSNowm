@@ -3,8 +3,6 @@ import * as os from "os";
 import * as vscode from "vscode";
 
 import * as dayjs from "dayjs";
-import { WSAEWOULDBLOCK } from "constants";
-import { stringify } from "querystring";
 
 export const resolveRoot = (filepath?: string) => {
   if (!filepath) {
