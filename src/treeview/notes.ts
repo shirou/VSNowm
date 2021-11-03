@@ -3,27 +3,7 @@ import * as path from "path";
 
 import * as matter from "gray-matter";
 import { resolveRoot, FrontMatterType } from "../utils";
-
-class NoteTreeItem extends vscode.TreeItem {
-  public filePath: string;
-  public fileType: vscode.FileType;
-  constructor(
-    public readonly label: string,
-    filePath: string,
-    fileType: vscode.FileType,
-    public readonly collapsibleState: vscode.TreeItemCollapsibleState
-  ) {
-    super(label, collapsibleState);
-    this.label = label;
-    this.filePath = filePath;
-    this.fileType = fileType;
-  }
-
-  iconPath = {
-    light: path.join(__filename, ".", "media", "icon", "light", "file.svg"),
-    dark: path.join(__filename, ".", "media", "icon", "dark", "file.svg"),
-  };
-}
+import { NoteTreeItem } from "../models/notes";
 
 export class NotesTreeView implements vscode.TreeDataProvider<NoteTreeItem> {
   noteRoot: string;
@@ -99,17 +79,6 @@ export class NotesTreeView implements vscode.TreeDataProvider<NoteTreeItem> {
     return node;
   }
 
-  private _onDidChangeTreeData: vscode.EventEmitter<
-    NoteTreeItem | undefined | null | void
-  > = new vscode.EventEmitter<NoteTreeItem | undefined | null | void>();
-  readonly onDidChangeTreeData: vscode.Event<
-    NoteTreeItem | undefined | null | void
-  > = this._onDidChangeTreeData.event;
-
-  refresh(): void {
-    this._onDidChangeTreeData.fire();
-  }
-
   async getTitle(dir: string, filePath: string) {
     const uri = vscode.Uri.file(path.join(dir, filePath));
     const content = await vscode.workspace.fs.readFile(uri);
@@ -120,5 +89,16 @@ export class NotesTreeView implements vscode.TreeDataProvider<NoteTreeItem> {
     }
     const data = parsedFrontMatter.data as FrontMatterType;
     return data.title ? data.title : filePath;
+  }
+
+  private _onDidChangeTreeData: vscode.EventEmitter<
+    NoteTreeItem | undefined | null | void
+  > = new vscode.EventEmitter<NoteTreeItem | undefined | null | void>();
+  readonly onDidChangeTreeData: vscode.Event<
+    NoteTreeItem | undefined | null | void
+  > = this._onDidChangeTreeData.event;
+
+  refresh(): void {
+    this._onDidChangeTreeData.fire();
   }
 }

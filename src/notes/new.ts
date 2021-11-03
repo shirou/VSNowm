@@ -11,6 +11,8 @@ import {
 const defaultTemplate = `---
 date: {dt}
 title: 
+categories:
+  - note
 ---
 `;
 

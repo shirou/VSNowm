@@ -1,12 +1,10 @@
 import * as vscode from "vscode";
-import * as path from "path";
 
-import * as matter from "gray-matter";
 import { newSearcher, Searcher } from "../search/index";
 import { resolveRoot, FrontMatterType } from "../utils";
-import { TaskTreeItem } from "../models/tasks";
+import { LinkTreeItem } from "../models/links";
 
-export class TasksTreeView implements vscode.TreeDataProvider<TaskTreeItem> {
+export class LinksTreeView implements vscode.TreeDataProvider<LinkTreeItem> {
   noteRoot: string;
   // ignorePattern: RegExp;
   defaultExt: string;
@@ -29,20 +27,20 @@ export class TasksTreeView implements vscode.TreeDataProvider<TaskTreeItem> {
     );*/
   }
 
-  async getChildren(node?: TaskTreeItem) {
-    const todos = await this.searcher.searchTodo(this.noteRoot);
+  async getChildren(node?: LinkTreeItem) {
+    const todos = await this.searcher.listLinks(this.noteRoot);
     return Promise.resolve(todos);
   }
 
-  getTreeItem(node: TaskTreeItem): vscode.TreeItem {
+  getTreeItem(node: LinkTreeItem): vscode.TreeItem {
     return node;
   }
 
   private _onDidChangeTreeData: vscode.EventEmitter<
-    TaskTreeItem | undefined | null | void
-  > = new vscode.EventEmitter<TaskTreeItem | undefined | null | void>();
+    LinkTreeItem | undefined | null | void
+  > = new vscode.EventEmitter<LinkTreeItem | undefined | null | void>();
   readonly onDidChangeTreeData: vscode.Event<
-    TaskTreeItem | undefined | null | void
+    LinkTreeItem | undefined | null | void
   > = this._onDidChangeTreeData.event;
 
   refresh(): void {

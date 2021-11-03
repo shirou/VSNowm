@@ -103,10 +103,6 @@
         "title": "VSNowm: List TODO"
       },
       {
-        "command": "vsnowm.openNoteFolder",
-        "title": "VSNowm: Open Note Folder"
-      },
-      {
         "command": "vsnowm.openNote",
         "title": "VSNowm: Open a note"
       },
@@ -119,8 +115,20 @@
         "title": "VSNowm: Search notes"
       },
       {
-        "command": "vsnowm.refreshNoteView",
+        "command": "vsnowm.searchLinks",
+        "title": "VSNowm: Search notes by Link"
+      },
+      {
+        "command": "vsnowm.refreshNotesView",
         "title": "refresh Note",
+        "icon": {
+          "light": "./media/icon/light/sync.svg",
+          "dark": "./media/icon/dark/sync.svg"
+        }
+      },
+      {
+        "command": "vsnowm.refreshLinksView",
+        "title": "refresh Links",
         "icon": {
           "light": "./media/icon/light/sync.svg",
           "dark": "./media/icon/dark/sync.svg"
@@ -151,6 +159,10 @@
         {
           "id": "vsnowm.tasks",
           "name": "Tasks"
+        },
+        {
+          "id": "vsnowm.links",
+          "name": "Links"
         }
       ]
     },
@@ -166,7 +178,7 @@
     "menus": {
       "view/title": [
         {
-          "command": "vsnowm.refreshNoteView",
+          "command": "vsnowm.refreshNotesView",
           "when": "view == vsnowm.notes",
           "group": "navigation"
         },
@@ -174,12 +186,25 @@
           "command": "vsnowm.refreshTasksView",
           "when": "view == vsnowm.tasks",
           "group": "navigation"
+        },
+        {
+          "command": "vsnowm.refreshLinksView",
+          "when": "view == vsnowm.links",
+          "group": "navigation"
         }
       ],
       "view/item/context": [
         {
           "command": "vsnowm.openNote",
           "when": "view == vsnowm.notes && viewItem == file"
+        },
+        {
+          "command": "vsnowm.openNote",
+          "when": "view == vsnowm.tasks && viewItem == task"
+        },
+        {
+          "command": "vsnowm.searchLinks",
+          "when": "view == vsnowm.links && viewItem == link"
         }
       ]
     }

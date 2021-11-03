@@ -1,22 +1,21 @@
-// This files is modified version of
-// https://github.com/alexlafroscia/ripgrep-js
-
+import * as vscode from "vscode";
 import { exec } from "child_process";
+import * as path from "path";
 import { RipGrepError, Match, Options } from "./ripgrep_types";
 
 import { rgPath } from "vscode-ripgrep";
 
 import { Searcher } from "./index";
 import { TaskTreeItem } from "../models/tasks";
+import { LinkTreeItem, LinkQuickPickItem } from "../models/links";
+
 export * from "./ripgrep_types";
 
 const formatResults = (stdout: string): Match[] => {
   stdout = stdout.trim();
-
   if (!stdout) {
     return [];
   }
-
   return stdout
     .split("\n")
     .map((line) => JSON.parse(line))
@@ -33,18 +32,63 @@ export class RipGrep implements Searcher {
 
   async searchTodo(root: string) {
     const execBuf = [`${rgPath}`, "--json"];
-    execBuf.push("-g", `*\.$${this.ext}`);
-    execBuf.push("-e", "^- [ ]");
+    execBuf.push("-g", `*\.${this.ext}`);
+    execBuf.push("-e", String.raw`'^- \[ \]'`);
 
     const matches = await this.exec(execBuf, root);
 
     return matches.map((match) => {
+      const label = match.lines.text.replace("- [ ]", "");
+
       return new TaskTreeItem(
-        match.lines.text,
+        label,
         match.path.text,
-        match.line_number
+        match.line_number - 1 // ripgrep start from 1
       );
     });
+  }
+
+  async searchLinks(root: string, link: string) {
+    const execBuf = [`${rgPath}`, "--json"];
+    execBuf.push("-g", `*\.${this.ext}`);
+    execBuf.push("-e", String.raw`'\[\[${link}\]\]'`);
+
+    const matches = await this.exec(execBuf, root);
+
+    return matches
+      .map((match) => {
+        // submatches might be multiple
+        return match.submatches.map((m) => {
+          return {
+            label: match.lines.text,
+            filePath: match.path.text, // rg returns abs path
+            lineNumber: match.line_number - 1,
+            columns: m.start,
+          } as LinkQuickPickItem;
+        });
+      })
+      .flat(); // should be flatten.
+  }
+
+  async listLinks(root: string) {
+    const execBuf = [`${rgPath}`, "--json"];
+    execBuf.push("-g", `*\.${this.ext}`);
+    execBuf.push("-e", String.raw`'\[\[(.*)\]\]'`);
+
+    const matches = await this.exec(execBuf, root);
+
+    const labels = matches
+      .map((match) => {
+        // submatches might be multiple
+        return match.submatches.map((m) => {
+          return m.match.text.replace("[[", "").replace("]]", "");
+        });
+      })
+      .flat(); // should be flatten.
+
+    const uniqued = Array.from(new Set(labels));
+
+    return uniqued.map((label) => new LinkTreeItem(label));
   }
 
   async exec(execBuf: string[], cwd: string): Promise<Match[]> {
@@ -56,7 +100,6 @@ export class RipGrep implements Searcher {
         execString,
         { cwd: cwd, timeout: 30000 },
         (error, stdout, stderr) => {
-          console.log(error, stdout);
           if (!error || (error && stderr === "")) {
             resolve(formatResults(stdout));
           } else {
@@ -67,63 +110,3 @@ export class RipGrep implements Searcher {
     });
   }
 }
-
-export const ripGrep = async (
-  cwd: string,
-  optionsOrSearchTerm: Options | string
-): Promise<Array<Match>> => {
-  let options: Options;
-  const execBuf = [`${rgPath}`, "--json"];
-
-  if (typeof optionsOrSearchTerm === "string") {
-    options = {
-      query: optionsOrSearchTerm,
-    };
-  } else {
-    options = optionsOrSearchTerm;
-  }
-
-  if (!cwd) {
-    return Promise.reject(new Error("No `cwd` provided"));
-  }
-
-  if ("regex" in options) {
-    execBuf.push("-e", options.regex);
-  } else if ("query" in options) {
-    execBuf.push("-F", options.query);
-  }
-
-  if (options.fileType) {
-    if (!Array.isArray(options.fileType)) {
-      options.fileType = [options.fileType];
-    }
-    for (const fileType of options.fileType) {
-      execBuf.push("-t", fileType);
-    }
-  }
-
-  if (options.globs) {
-    options.globs.map((glob) => {
-      execBuf.push("-g", glob);
-    });
-  }
-
-  if (options.multiline) {
-    execBuf.push("--multiline");
-  }
-
-  execBuf.push(cwd); // need to specify path
-
-  return new Promise(function (resolve, reject) {
-    const execString = execBuf.join(" ");
-    console.log(execString);
-    exec(execString, { cwd: cwd, timeout: 30000 }, (error, stdout, stderr) => {
-      console.log(error, stdout);
-      if (!error || (error && stderr === "")) {
-        resolve(formatResults(stdout));
-      } else {
-        reject(new RipGrepError(error, stderr));
-      }
-    });
-  });
-};
