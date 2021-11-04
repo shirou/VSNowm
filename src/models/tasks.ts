@@ -3,10 +3,13 @@ import * as path from "path";
 
 export class TaskTreeItem extends vscode.TreeItem {
   public filePath: string;
+  /*
   public iconPath = {
-    light: path.join(__filename, ".", "media", "icon", "light", "file.svg"),
-    dark: path.join(__filename, ".", "media", "icon", "dark", "file.svg"),
+    light: path.join(__filename, "..", "..", "..", "media", "icon", "light", "task.svg"),
+    dark: path.join(__filename, "..", "..", "..", "media", "icon", "dark", "task.svg"),
   };
+  */
+  public iconPath = new vscode.ThemeIcon("debug-stackframe-dot");
 
   constructor(
     public readonly label: string,

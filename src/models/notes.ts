@@ -14,10 +14,16 @@ export class NoteTreeItem extends vscode.TreeItem {
     this.label = label;
     this.filePath = filePath;
     this.fileType = fileType;
-  }
 
+    this.iconPath =
+      fileType === vscode.FileType.Directory
+        ? new vscode.ThemeIcon("file-directory")
+        : new vscode.ThemeIcon("file-text");
+  }
+  /*
   iconPath = {
     light: path.join(__filename, ".", "media", "icon", "light", "file.svg"),
     dark: path.join(__filename, ".", "media", "icon", "dark", "file.svg"),
   };
+  */
 }

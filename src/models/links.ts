@@ -2,10 +2,7 @@ import * as vscode from "vscode";
 import * as path from "path";
 
 export class LinkTreeItem extends vscode.TreeItem {
-  public iconPath = {
-    light: path.join(__filename, ".", "media", "icon", "light", "file.svg"),
-    dark: path.join(__filename, ".", "media", "icon", "dark", "file.svg"),
-  };
+  public iconPath = new vscode.ThemeIcon("link");
 
   constructor(public readonly label: string) {
     super(label, vscode.TreeItemCollapsibleState.None);

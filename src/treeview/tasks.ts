@@ -1,9 +1,7 @@
 import * as vscode from "vscode";
-import * as path from "path";
 
-import * as matter from "gray-matter";
 import { newSearcher, Searcher } from "../search/index";
-import { resolveRoot, FrontMatterType } from "../utils";
+import { resolveRoot } from "../utils";
 import { TaskTreeItem } from "../models/tasks";
 
 export class TasksTreeView implements vscode.TreeDataProvider<TaskTreeItem> {
