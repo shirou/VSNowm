@@ -6,7 +6,6 @@ import { TaskTreeItem } from "../models/tasks";
 
 export class TasksTreeView implements vscode.TreeDataProvider<TaskTreeItem> {
   noteRoot: string;
-  // ignorePattern: RegExp;
   defaultExt: string;
   searcher: Searcher;
 
@@ -16,15 +15,6 @@ export class TasksTreeView implements vscode.TreeDataProvider<TaskTreeItem> {
     this.defaultExt = config.get("defaultExt") as string;
 
     this.searcher = newSearcher("ripgrep", this.defaultExt);
-
-    /*
-        this.ignorePattern = new RegExp(
-      config.get("ignorePatterns")
-        .map(function (pattern) {
-          return "(" + pattern + ")";
-        })
-        .join("|")
-    );*/
   }
 
   async getChildren(node?: TaskTreeItem) {

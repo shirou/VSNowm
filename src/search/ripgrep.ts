@@ -8,6 +8,7 @@ import { rgPath } from "vscode-ripgrep";
 import { Searcher } from "./index";
 import { TaskTreeItem } from "../models/tasks";
 import { LinkTreeItem, LinkQuickPickItem } from "../models/links";
+import { walkFiles } from "../utils";
 
 export * from "./ripgrep_types";
 
@@ -28,6 +29,11 @@ export class RipGrep implements Searcher {
 
   constructor(ext: string) {
     this.ext = ext;
+  }
+
+  async listNotes(root: string, maxResults: number) {
+    const rootUri = vscode.Uri.file(root);
+    return await walkFiles(rootUri, maxResults, this.ext);
   }
 
   async searchTodo(root: string) {

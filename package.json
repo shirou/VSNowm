@@ -62,26 +62,6 @@
           "type": "number",
           "default": 15,
           "description": "Number of recent files to show when running command `List Notes`."
-        },
-        "vsnowm.ignorePatterns": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "default": [
-            "^\\."
-          ],
-          "description": "Regular expressions for file names to ignore when parsing documents in note folder."
-        },
-        "vsnowm.treeviewHideTags": {
-          "type": "boolean",
-          "default": false,
-          "description": "Hide the tags section in the sidebar. Requires application restart."
-        },
-        "vsnowm.treeviewHideFiles": {
-          "type": "boolean",
-          "default": false,
-          "description": "Hide the files section in the sidebar. Requires application restart."
         }
       }
     },
@@ -105,10 +85,6 @@
       {
         "command": "vsnowm.openNote",
         "title": "VSNowm: Open a note"
-      },
-      {
-        "command": "vsnowm.setupNotes",
-        "title": "VSNowm: Run setup"
       },
       {
         "command": "vsnowm.search",
@@ -154,7 +130,7 @@
       "vsnowm": [
         {
           "id": "vsnowm.notes",
-          "name": "Notes"
+          "name": "Recent Notes"
         },
         {
           "id": "vsnowm.tasks",
@@ -196,7 +172,7 @@
       "view/item/context": [
         {
           "command": "vsnowm.openNote",
-          "when": "view == vsnowm.notes && viewItem == file"
+          "when": "view == vsnowm.notes && viewItem == note"
         },
         {
           "command": "vsnowm.openNote",

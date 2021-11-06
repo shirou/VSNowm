@@ -3,6 +3,7 @@ import * as vscode from "vscode";
 const textHeadPos = new vscode.Position(0, 0);
 
 export const openNote = (uri: any) => {
+  console.log("openNote", uri);
   openUrl(uri);
 };
 

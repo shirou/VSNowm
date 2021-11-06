@@ -1,8 +1,10 @@
 import * as path from "path";
 import * as os from "os";
 import * as vscode from "vscode";
-
+import * as matter from "gray-matter";
 import * as dayjs from "dayjs";
+
+import { NoteTreeItem } from "./models/notes";
 
 export const resolveRoot = (filepath?: string) => {
   if (!filepath) {
@@ -62,6 +64,10 @@ export const templateString = (
 export type FileItem = {
   path: string;
   fileType: vscode.FileType;
+  ctime: number;
+  mtime: number;
+  permissions?: vscode.FilePermission;
+  size: number;
 };
 
 export type FrontMatterType = {
@@ -82,12 +88,20 @@ export const walk = async (
     switch (fileType) {
       case vscode.FileType.File:
         if (filePath.endsWith(ext)) {
+          const absFilePath = path.join(...parent, filePath);
+          const uri = vscode.Uri.file(absFilePath);
+          const st = await vscode.workspace.fs.stat(uri); // TODO: is it slow?
           files.push({
             path: path.join(...parent, filePath),
             fileType: fileType,
+            ctime: st.ctime,
+            mtime: st.mtime,
+            permissions: st.permissions,
+            size: st.size,
           });
         }
         break;
+      /*
       case vscode.FileType.Directory:
         const p = path.join(...parent, filePath);
         const nextDir = vscode.Uri.file(p);
@@ -98,24 +112,57 @@ export const walk = async (
         const f = await walk(parent.concat(filePath), nextDir, ext);
         files.push(...f);
         break;
+        */
     }
   }
   return files;
 };
 
-/*
-const walk = async (folder: vscode.Uri): Promise<string[]> => {
-  let total = 0;
-  let count = 0;
+// walkFiles returns all files by using `findFiles`
+export const walkFiles = async (
+  root: vscode.Uri,
+  maxResults: number,
+  ext: string
+): Promise<NoteTreeItem[]> => {
+  const globPattern = new vscode.RelativePattern(root, `**/*.${ext}`);
+  const exclude = new vscode.RelativePattern(root, `templates`);
+  const files = [] as FileItem[];
 
-  for (const [name, type] of await vscode.workspace.fs.findFiles(folder)) {
-      if (type === vscode.FileType.File) {
-          const filePath = path.join(folder.path, name);
-          const stat = await vscode.workspace.fs.stat(folder.with({ path: filePath }));
-          total += stat.size;
-          count += 1;
-      }
+  // use for-of because of performance
+  for (const uri of await vscode.workspace.findFiles(globPattern, exclude)) {
+    const filePath = uri.fsPath;
+    const st = await vscode.workspace.fs.stat(root.with({ path: filePath }));
+    files.push({
+      path: filePath,
+      fileType: vscode.FileType.File,
+      ctime: st.ctime,
+      mtime: st.mtime,
+      permissions: st.permissions,
+      size: st.size,
+    });
   }
-  return { total, count };
-}
-*/
+
+  const ret = [] as NoteTreeItem[];
+  // retrieve text data only maxResults to better performance
+  const sortedFiles = files
+    .sort((a, b) => b.mtime - a.mtime)
+    .slice(0, maxResults);
+  for (const file of sortedFiles) {
+    const label = await getTitle(file.path);
+    ret.push(new NoteTreeItem(label, file));
+  }
+
+  return ret;
+};
+
+const getTitle = async (filePath: string) => {
+  const uri = vscode.Uri.file(filePath);
+  const content = await vscode.workspace.fs.readFile(uri);
+  const parsedFrontMatter = matter(content.toString());
+  if (!(parsedFrontMatter.data instanceof Object)) {
+    console.error("YAML front-matter is not an object: ", filePath);
+    return filePath;
+  }
+  const data = parsedFrontMatter.data as FrontMatterType;
+  return data.title ? data.title : path.basename(filePath);
+};

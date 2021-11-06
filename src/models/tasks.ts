@@ -1,5 +1,4 @@
 import * as vscode from "vscode";
-import * as path from "path";
 
 export class TaskTreeItem extends vscode.TreeItem {
   public filePath: string;

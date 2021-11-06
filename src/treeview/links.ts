@@ -6,7 +6,6 @@ import { LinkTreeItem } from "../models/links";
 
 export class LinksTreeView implements vscode.TreeDataProvider<LinkTreeItem> {
   noteRoot: string;
-  // ignorePattern: RegExp;
   defaultExt: string;
   searcher: Searcher;
 
@@ -16,15 +15,6 @@ export class LinksTreeView implements vscode.TreeDataProvider<LinkTreeItem> {
     this.defaultExt = config.get("defaultExt") as string;
 
     this.searcher = newSearcher("ripgrep", this.defaultExt);
-
-    /*
-        this.ignorePattern = new RegExp(
-      config.get("ignorePatterns")
-        .map(function (pattern) {
-          return "(" + pattern + ")";
-        })
-        .join("|")
-    );*/
   }
 
   async getChildren(node?: LinkTreeItem) {

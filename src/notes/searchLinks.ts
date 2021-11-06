@@ -3,7 +3,6 @@ import * as vscode from "vscode";
 import { resolveRoot } from "../utils";
 import { newSearcher, Searcher } from "../search";
 import { openUrl } from "../notes/open";
-import { LinkQuickPickItem } from "../models/links";
 
 const getTarget = async (
   noteRoot: string,
