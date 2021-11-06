@@ -33,6 +33,8 @@ export class RipGrep implements Searcher {
 
   async listNotes(root: string, maxResults: number) {
     const rootUri = vscode.Uri.file(root);
+
+    // use vsnote.workspace implementation even if ripgrep. Because めんどくさい
     return await walkFiles(rootUri, maxResults, this.ext);
   }
 

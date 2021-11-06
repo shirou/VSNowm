@@ -95,6 +95,10 @@
         "title": "VSNowm: Search notes by Link"
       },
       {
+        "command": "vsnowm.sync",
+        "title": "VSNowm: Sync with remote"
+      },
+      {
         "command": "vsnowm.refreshNotesView",
         "title": "refresh Note",
         "icon": {

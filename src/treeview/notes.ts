@@ -8,8 +8,6 @@ import { newSearcher, Searcher } from "../search";
 export class NotesTreeView implements vscode.TreeDataProvider<NoteTreeItem> {
   noteRoot: string;
   listRecentLimit: number;
-  hideTags: boolean | undefined;
-  hideFiles: boolean | undefined;
   defaultExt: string;
   searcher: Searcher;
 

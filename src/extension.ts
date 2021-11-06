@@ -2,9 +2,9 @@ import * as vscode from "vscode";
 
 import { openUrl } from "./notes/open";
 import { newNote } from "./notes/new";
-import { listNotes } from "./notes/list";
 import { openSearch } from "./openSearch";
 import { searchLinks } from "./notes/searchLinks";
+import { sync } from "./notes/sync";
 import { NotesTreeView } from "./treeview/notes";
 import { TasksTreeView } from "./treeview/tasks";
 import { LinksTreeView } from "./treeview/links";
@@ -25,13 +25,13 @@ export const activate = (context: vscode.ExtensionContext) => {
 
   context.subscriptions.push(
     vscode.commands.registerCommand("vsnowm.newNote", newNote),
-    vscode.commands.registerCommand("vsnowm.listNotes", listNotes),
+    // vscode.commands.registerCommand("vsnowm.listNotes", listNotes),
     vscode.commands.registerCommand("vsnowm.listTodo", empty),
     vscode.commands.registerCommand("vsnowm.setupNotes", empty),
     vscode.commands.registerCommand("vsnowm.openNoteFolder", empty),
-    vscode.commands.registerCommand("vsnowm.sync", empty),
     vscode.commands.registerCommand("vsnowm.search", openSearch),
     vscode.commands.registerCommand("vsnowm.searchLinks", searchLinks),
+    vscode.commands.registerCommand("vsnowm.sync", sync),
     vscode.commands.registerCommand("vsnowm.refreshNotesView", () =>
       nodeTv.refresh()
     ),
