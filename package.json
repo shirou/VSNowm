@@ -62,6 +62,11 @@
           "type": "number",
           "default": 15,
           "description": "Number of recent files to show when running command `List Notes`."
+        },
+        "vsnowm.autoSyncIntervalSec": {
+          "type": "number",
+          "default": 300,
+          "description": "Interval seconds between automatically sync with remote repo."
         }
       }
     },

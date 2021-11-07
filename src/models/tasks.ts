@@ -1,14 +1,22 @@
 import * as vscode from "vscode";
+import * as dayjs from "dayjs";
+
+
+type TaskType = "todo" | "reminder" | "deadline";
+
+const calcImportance = (taskType: TaskType, date: Date, now: dayjs.Dayjs | undefined = undefined):number => {
+
+
+  return 0;
+};
+
 
 export class TaskTreeItem extends vscode.TreeItem {
   public filePath: string;
-  /*
-  public iconPath = {
-    light: path.join(__filename, "..", "..", "..", "media", "icon", "light", "task.svg"),
-    dark: path.join(__filename, "..", "..", "..", "media", "icon", "dark", "task.svg"),
-  };
-  */
   public iconPath = new vscode.ThemeIcon("debug-stackframe-dot");
+  public importance?: number;
+  public dueDate?: dayjs.Dayjs;
+  public taskType?: TaskType;
 
   constructor(
     public readonly label: string,

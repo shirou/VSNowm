@@ -9,8 +9,11 @@ import { Searcher } from "./index";
 import { TaskTreeItem } from "../models/tasks";
 import { LinkTreeItem, LinkQuickPickItem } from "../models/links";
 import { walkFiles } from "../utils";
+import { homedir } from "os";
 
 export * from "./ripgrep_types";
+
+const HowmTaskRe = /\[(\d{4}-\d{2}-\d{2})\][(!@+)](.*)/g;
 
 const formatResults = (stdout: string): Match[] => {
   stdout = stdout.trim();
@@ -38,10 +41,29 @@ export class RipGrep implements Searcher {
     return await walkFiles(rootUri, maxResults, this.ext);
   }
 
+  async searchHowmTasks(root: string) {
+    const execBuf = [`${rgPath}`, "--json"];
+    execBuf.push("-g", `*\.${this.ext}`);
+    execBuf.push("-e", `'\[\d{4}-\d{2}-\d{2}\][-!@+]'`);
+
+    const matches = await this.exec(execBuf, root);
+    return matches.map((match) => {
+      const m = match.lines.text.matchAll(HowmTaskRe);
+
+      const label = match.lines.text.replace("- [ ]", "");
+
+      return new TaskTreeItem(
+        label,
+        match.path.text,
+        match.line_number - 1 // ripgrep starts from 1
+      );
+    });
+  }
+
   async searchTodo(root: string) {
     const execBuf = [`${rgPath}`, "--json"];
     execBuf.push("-g", `*\.${this.ext}`);
-    execBuf.push("-e", String.raw`'^- \[ \]'`);
+    execBuf.push("-e", `'^- \[ \]'`);
 
     const matches = await this.exec(execBuf, root);
 
@@ -81,7 +103,7 @@ export class RipGrep implements Searcher {
   async listLinks(root: string) {
     const execBuf = [`${rgPath}`, "--json"];
     execBuf.push("-g", `*\.${this.ext}`);
-    execBuf.push("-e", String.raw`'\[\[(.*)\]\]'`);
+    execBuf.push("-e", `'\[\[(.*)\]\]'`);
 
     const matches = await this.exec(execBuf, root);
 
