@@ -44,7 +44,7 @@ export class RipGrep implements Searcher {
   async searchHowmTasks(root: string) {
     const execBuf = [`${rgPath}`, "--json"];
     execBuf.push("-g", `*\.${this.ext}`);
-    execBuf.push("-e", `'\[\d{4}-\d{2}-\d{2}\][-!@+]'`);
+    execBuf.push("-e", String.raw`'\[\d{4}-\d{2}-\d{2}\][-!@+]'`);
 
     const matches = await this.exec(execBuf, root);
     return matches.map((match) => {
@@ -63,7 +63,7 @@ export class RipGrep implements Searcher {
   async searchTodo(root: string) {
     const execBuf = [`${rgPath}`, "--json"];
     execBuf.push("-g", `*\.${this.ext}`);
-    execBuf.push("-e", `'^- \[ \]'`);
+    execBuf.push("-e", String.raw`'^- \[ \]'`);
 
     const matches = await this.exec(execBuf, root);
 
@@ -103,7 +103,7 @@ export class RipGrep implements Searcher {
   async listLinks(root: string) {
     const execBuf = [`${rgPath}`, "--json"];
     execBuf.push("-g", `*\.${this.ext}`);
-    execBuf.push("-e", `'\[\[(.*)\]\]'`);
+    execBuf.push("-e", String.raw`'\[\[(.*)\]\]'`);
 
     const matches = await this.exec(execBuf, root);
 

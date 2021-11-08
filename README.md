@@ -30,7 +30,7 @@ VSNowm is a note taking extension for the VS Code. This is inspired many things 
 
 - vsnowm.defaultNoteRoot:
   - default: "~/notes/"
-  - You can add `vsnowm.defaultNoteRoot` to `settingsSync.ignoredSettings` to run on multiple place.
+  - You can add `vsnowm.defaultNoteRoot` to `settingsSync.ignoredSettings` in order to run on multiple place.
 - vsnowm.defaultNoteFilePath":
   - default: "{year}/{month}/{day}/{dt}.{ext}",
 - vsnowm.defaultDateFormat
@@ -44,9 +44,28 @@ VSNowm is a note taking extension for the VS Code. This is inspired many things 
 
 # Documents
 
-- templates is `${your note folder}/templates/default.md`.
-  - This will be changed or selectable, but not implmeneted yet.
 
+## template
+
+The default template is recorded in `${your setting note folder}/templates/default.md` when it is first started. This template will be loaded whenever you create a new note. If you want to change template, please edit it.
+
+Template will be changed or selectable, but not implmeneted yet.
+
+## frontmetter
+
+```
+---
+date: 2021-10-23 21:09:12
+title: Title is not required
+tags:
+  - note
+  - foo
+---
+```
+
+- date: created date. format is same as defaultDateFormat
+- title: not required, you can left an empty. But when title is set, title will be shown in "Resent Notes" instead of a timestamp filename.
+- tags: Currently, not used now
 
 ## Task Format
 
