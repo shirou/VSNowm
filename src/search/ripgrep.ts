@@ -8,7 +8,7 @@ import { rgPath } from "vscode-ripgrep";
 import { Searcher } from "./index";
 import { TaskTreeItem } from "../models/tasks";
 import { LinkTreeItem, LinkQuickPickItem } from "../models/links";
-import { walkFiles } from "../utils";
+import { walk } from "../utils";
 import { homedir } from "os";
 
 export * from "./ripgrep_types";
@@ -35,10 +35,11 @@ export class RipGrep implements Searcher {
   }
 
   async listNotes(root: string, maxResults: number) {
-    const rootUri = vscode.Uri.file(root);
+    const rootUri = vscode.Uri.file(root + "/");
 
+    console.log(root, rootUri);
     // use vsnote.workspace implementation even if ripgrep. Because めんどくさい
-    return await walkFiles(rootUri, maxResults, this.ext);
+    return await walk(rootUri, maxResults, this.ext);
   }
 
   async searchHowmTasks(root: string) {

@@ -76,15 +76,19 @@ export type FrontMatterType = {
   updated?: string;
 };
 
-export const walk = async (
-  parent: string[],
+const walkRecursive = async (
   dir: vscode.Uri,
-  ext: string
+  maxResults: number,
+  ext: string,
+  parent: string[]
 ): Promise<FileItem[]> => {
   const f = await vscode.workspace.fs.readDirectory(dir);
 
   const files = [] as FileItem[];
   for (const [filePath, fileType] of f) {
+    if (filePath.startsWith(".") || filePath === "templates") {
+      continue;
+    }
     switch (fileType) {
       case vscode.FileType.File:
         if (filePath.endsWith(ext)) {
@@ -101,24 +105,44 @@ export const walk = async (
           });
         }
         break;
-      /*
       case vscode.FileType.Directory:
         const p = path.join(...parent, filePath);
         const nextDir = vscode.Uri.file(p);
-        files.push({
-          path: p,
-          fileType: fileType,
-        });
-        const f = await walk(parent.concat(filePath), nextDir, ext);
+        const f = await walkRecursive(
+          nextDir,
+          maxResults,
+          ext,
+          parent.concat(filePath)
+        );
         files.push(...f);
         break;
-        */
     }
   }
   return files;
 };
 
+export const walk = async (
+  dir: vscode.Uri,
+  maxResults: number,
+  ext: string
+): Promise<NoteTreeItem[]> => {
+  const files = await walkRecursive(dir, maxResults, ext, [dir.fsPath]);
+
+  const ret = [] as NoteTreeItem[];
+  // retrieve text data only maxResults to better performance
+  const sortedFiles = files
+    .sort((a, b) => b.mtime - a.mtime)
+    .slice(0, maxResults);
+  for (const file of sortedFiles) {
+    const label = await getTitle(file.path);
+    ret.push(new NoteTreeItem(label, file));
+  }
+
+  return ret;
+};
+
 // walkFiles returns all files by using `findFiles`
+// This function requires workspace, so it is now deprecated.
 export const walkFiles = async (
   root: vscode.Uri,
   maxResults: number,

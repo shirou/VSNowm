@@ -1,15 +1,15 @@
 import * as vscode from "vscode";
 import * as dayjs from "dayjs";
 
-
 type TaskType = "todo" | "reminder" | "deadline";
 
-const calcImportance = (taskType: TaskType, date: Date, now: dayjs.Dayjs | undefined = undefined):number => {
-
-
+const calcImportance = (
+  taskType: TaskType,
+  date: Date,
+  now: dayjs.Dayjs | undefined = undefined
+): number => {
   return 0;
 };
-
 
 export class TaskTreeItem extends vscode.TreeItem {
   public filePath: string;

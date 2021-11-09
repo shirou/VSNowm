@@ -1,6 +1,6 @@
 # VSNowm README
 
-VSNowm is a note taking extension for the VS Code. This is inspired many things by [VSNote](https://marketplace.visualstudio.com/items?itemName=patricklee.vsnotes), but this is not a Note taking tool, but 
+VSNowm is a note taking extension for the VS Code. This is inspired many things by [VSNote](https://marketplace.visualstudio.com/items?itemName=patricklee.vsnotes), but this is not a Note taking tool, but
 
 - [Howm](https://howm.osdn.jp/index.html) format task
 
@@ -19,7 +19,6 @@ VSNowm is a note taking extension for the VS Code. This is inspired many things 
 - Open the command palette Ctrl/Cmd + Shift + p and type `VSNowm: Create note`
 - enjoy!
   - Your first note stores in the `~/notes`. If you want to change, please setup the configurations.
-
 
 # Commands
 
@@ -43,7 +42,6 @@ VSNowm is a note taking extension for the VS Code. This is inspired many things 
   - default: 300
 
 # Documents
-
 
 ## template
 
@@ -71,7 +69,7 @@ tags:
 
 There are 2 kind of Task format.
 
-- Normal todo format. 
+- Normal todo format.
   - `- [ ] This is TODO`
 - [howm](https://howm.osdn.jp/index.html) format
   - `[2021-11-20]@ This is TODO`
@@ -90,13 +88,13 @@ Howm format abolishes "importance". Instead, use the "float" method to change th
 
 - reminder: slowly sinking (I can't do everything anyway :p)
 - todo: Gradually float
-- Deadlines: float when the specified date approaches 
+- Deadlines: float when the specified date approaches
 
 When you use Howm format, tasks are sorted by calculated point.
 
 ```
 [YYYY-MM-DD]@ Text
-````
+```
 
 Here is format descibred by RegEx.
 
@@ -106,7 +104,7 @@ Here is format descibred by RegEx.
 
 Date should be `YYYY-mm-dd`.
 
-- Reminder = `-` :  
+- Reminder = `-` :
   - Rises to the upper on the specified date and gradually sinks thereafter.
   - Hides at the bottom until the specified date.
 - Todo = `+` :
@@ -119,11 +117,10 @@ Date should be `YYYY-mm-dd`.
   - From the specified date, ups and downs are repeated.
   - Hides at the bottom until the specified date.
   - The number of days to float is default 30 days.
-- Schedule = `@` : 
+- Schedule = `@` :
   - Show in the calendar instead of the todo list (Not implemented yet)
 - Done = `.`:
   - Finished task. Does not appear.
-
 
 ## Limitation
 
