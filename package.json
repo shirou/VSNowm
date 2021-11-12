@@ -3,6 +3,7 @@
   "displayName": "VSNowm",
   "description": "Personal note taking and task management tool",
   "version": "0.0.1",
+  "publisher": "rrudi",
   "engines": {
     "vscode": "^1.61.0"
   },
