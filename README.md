@@ -7,7 +7,8 @@ VSNowm is a note taking extension for the VS Code. This is inspired many things 
 # Features
 
 - Note taking tool. but not just a note.
-- Titles are not required (but can be included). Start writing as soon as you think of it!
+- Title is not required (but can be included). Start writing as soon as you think of it!
+  - A first line of the content will be used as a title.
 - None of us can "categorize" a Note. Find the notes you want with full text search and links.
   - VSNowm uses `ripgrep` to quick full text search.
 - Works on Remote connection
@@ -54,16 +55,18 @@ Template will be changed or selectable, but not implmeneted yet.
 ```
 ---
 date: 2021-10-23 21:09:12
-title: Title is not required
-tags:
+categories:
   - note
   - foo
 ---
 ```
 
-- date: created date. format is same as defaultDateFormat
-- title: not required, you can left an empty. But when title is set, title will be shown in "Resent Notes" instead of a timestamp filename.
-- tags: Currently, not used now
+- date: created date. format is same as defaultDateFormat.
+- Categories: Currently, not used.
+
+Other special variables:
+
+- title: not required, you can left an empty. But when title is set, title will be shown in "Resent Notes" instead of first line.
 
 ## Task Format
 

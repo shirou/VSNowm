@@ -17,6 +17,7 @@ export const resolveFilePath = (
   root: string,
   notePath: string,
   dtformat: string,
+  fileFormat: string,
   ext: string,
   date: dayjs.Dayjs | null = null
 ) => {
@@ -25,7 +26,7 @@ export const resolveFilePath = (
     date = dayjs();
   }
 
-  const resolved = templateString(orig, getReplacer(dtformat, ext, date));
+  const resolved = templateString(orig, getReplacer(fileFormat, ext, date));
 
   return resolved;
 };
@@ -48,6 +49,12 @@ export const getReplacer = (
     ["second", date.format("ss").toString()],
     ["dt", date.format(dtformat)],
     ["ext", ext],
+    ["YYYY", date.format("YYYY").toString()],
+    ["MM", date.format("MM").toString()],
+    ["DD", date.format("DD").toString()],
+    ["HH", date.format("HH").toString()],
+    ["mm", date.format("mm").toString()],
+    ["ss", date.format("ss").toString()],
   ]);
 };
 
@@ -179,7 +186,7 @@ export const walkFiles = async (
   return ret;
 };
 
-const getTitle = async (filePath: string) => {
+export const getTitle = async (filePath: string) => {
   const uri = vscode.Uri.file(filePath);
   const content = await vscode.workspace.fs.readFile(uri);
   const parsedFrontMatter = matter(content.toString());
@@ -188,5 +195,10 @@ const getTitle = async (filePath: string) => {
     return filePath;
   }
   const data = parsedFrontMatter.data as FrontMatterType;
-  return data.title ? data.title : path.basename(filePath);
+  return data.title
+    ? data.title
+    : parsedFrontMatter.content.substring(
+        0,
+        parsedFrontMatter.content.indexOf("\n")
+      );
 };

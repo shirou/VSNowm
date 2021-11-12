@@ -50,7 +50,7 @@
         },
         "vsnowm.defaultDateFormat": {
           "type": "string",
-          "default": "YYYY-MM-DDTHH:mm:ss",
+          "default": "YYYY-MM-DD HH:mm:ss",
           "description": "Formatted datetime."
         },
         "vsnowm.defaultExt": {

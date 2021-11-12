@@ -10,7 +10,6 @@ import {
 
 const defaultTemplate = `---
 date: {dt}
-title: 
 categories:
   - note
 ---
@@ -30,6 +29,8 @@ export const newNote = () => {
   createNote(noteRoot);
 };
 
+const DefaultFileFormat = "YYYY-MM-DD_HHmmss";
+
 const createNote = async (noteRoot: string) => {
   const config = vscode.workspace.getConfiguration("vsnowm");
   const defaultNoteFilePath = config.get("defaultNoteFilePath") as string;
@@ -47,6 +48,7 @@ const createNote = async (noteRoot: string) => {
     noteRoot,
     defaultNoteFilePath,
     defaultDateFormat,
+    DefaultFileFormat,
     defaultExt
   );
 

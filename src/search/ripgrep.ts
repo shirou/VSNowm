@@ -1,19 +1,18 @@
 import * as vscode from "vscode";
 import { exec } from "child_process";
 import * as path from "path";
-import { RipGrepError, Match, Options } from "./ripgrep_types";
-
+import * as dayjs from "dayjs";
 import { rgPath } from "vscode-ripgrep";
 
+import { RipGrepError, Match, Options } from "./ripgrep_types";
+
 import { Searcher } from "./index";
+import { NoteTreeItem } from "../models/notes";
 import { TaskTreeItem } from "../models/tasks";
 import { LinkTreeItem, LinkQuickPickItem } from "../models/links";
-import { walk } from "../utils";
-import { homedir } from "os";
+import { getTitle, FileItem } from "../utils";
 
 export * from "./ripgrep_types";
-
-const HowmTaskRe = /\[(\d{4}-\d{2}-\d{2})\][(!@+)](.*)/g;
 
 const formatResults = (stdout: string): Match[] => {
   stdout = stdout.trim();
@@ -34,27 +33,48 @@ export class RipGrep implements Searcher {
     this.ext = ext;
   }
 
-  async listNotes(root: string, maxResults: number) {
-    const rootUri = vscode.Uri.file(root + "/");
+  async listNotes(root: string, maxResults: number): Promise<NoteTreeItem[]> {
+    const execBuf = [`${rgPath}`, "--json"];
+    execBuf.push("-g", `*\.${this.ext}`);
+    execBuf.push("-g", `'\!templates'`); // ignore templates dir
+    execBuf.push("-m", "1"); // only first "date"
+    execBuf.push("-e", String.raw`'^date: '`);
 
-    console.log(root, rootUri);
-    // use vsnote.workspace implementation even if ripgrep. Because めんどくさい
-    return await walk(rootUri, maxResults, this.ext);
+    const matches = await this.exec(execBuf, root);
+    const files = matches.map((match) => {
+      const dayStr = match.lines.text.replace("date: ", "");
+      const dj = dayjs(dayStr);
+      return {
+        path: match.path.text,
+        fileType: vscode.FileType.File,
+        ctime: dj.unix(),
+        mtime: dj.unix(),
+        size: 0,
+      } as FileItem;
+    });
+
+    const ret = [] as NoteTreeItem[];
+    // retrieve text data only maxResults to better performance
+    const sortedFiles = files
+      .sort((a, b) => b.ctime - a.ctime)
+      .slice(0, maxResults);
+    for (const file of sortedFiles) {
+      const label = await getTitle(file.path);
+      ret.push(new NoteTreeItem(label, file));
+    }
+    return ret;
   }
 
   async searchHowmTasks(root: string) {
     const execBuf = [`${rgPath}`, "--json"];
     execBuf.push("-g", `*\.${this.ext}`);
+    execBuf.push("-g", `'\!templates'`); // ignore templates dir
     execBuf.push("-e", String.raw`'\[\d{4}-\d{2}-\d{2}\][-!@+]'`);
 
     const matches = await this.exec(execBuf, root);
     return matches.map((match) => {
-      const m = match.lines.text.matchAll(HowmTaskRe);
-
-      const label = match.lines.text.replace("- [ ]", "");
-
       return new TaskTreeItem(
-        label,
+        match.lines.text,
         match.path.text,
         match.line_number - 1 // ripgrep starts from 1
       );
@@ -64,11 +84,14 @@ export class RipGrep implements Searcher {
   async searchTodo(root: string) {
     const execBuf = [`${rgPath}`, "--json"];
     execBuf.push("-g", `*\.${this.ext}`);
+    execBuf.push("-g", `'\!templates'`); // ignore templates dir
     execBuf.push("-e", String.raw`'^- \[ \]'`);
 
     const matches = await this.exec(execBuf, root);
 
-    return matches.map((match) => {
+    const howmTaks = await this.searchHowmTasks(root);
+
+    const vanillas = matches.map((match) => {
       const label = match.lines.text.replace("- [ ]", "");
 
       return new TaskTreeItem(
@@ -77,11 +100,13 @@ export class RipGrep implements Searcher {
         match.line_number - 1 // ripgrep start from 1
       );
     });
+    return howmTaks.concat(vanillas);
   }
 
   async searchLinks(root: string, link: string) {
     const execBuf = [`${rgPath}`, "--json"];
     execBuf.push("-g", `*\.${this.ext}`);
+    execBuf.push("-g", `'\!templates'`); // ignore templates dir
     execBuf.push("-e", String.raw`'\[\[${link}\]\]'`);
 
     const matches = await this.exec(execBuf, root);
@@ -104,6 +129,7 @@ export class RipGrep implements Searcher {
   async listLinks(root: string) {
     const execBuf = [`${rgPath}`, "--json"];
     execBuf.push("-g", `*\.${this.ext}`);
+    execBuf.push("-g", `'\!templates'`); // ignore templates dir
     execBuf.push("-e", String.raw`'\[\[(.*)\]\]'`);
 
     const matches = await this.exec(execBuf, root);

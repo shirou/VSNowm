@@ -19,7 +19,8 @@ export class TasksTreeView implements vscode.TreeDataProvider<TaskTreeItem> {
 
   async getChildren(node?: TaskTreeItem) {
     const todos = await this.searcher.searchTodo(this.noteRoot);
-    return Promise.resolve(todos);
+    const sorted = todos.sort((a, b) => a.importance - b.importance);
+    return Promise.resolve(sorted);
   }
 
   getTreeItem(node: TaskTreeItem): vscode.TreeItem {
