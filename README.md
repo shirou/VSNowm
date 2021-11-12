@@ -1,25 +1,28 @@
 # VSNowm README
 
-VSNowm is a note taking extension for the VS Code. This is inspired many things by [VSNote](https://marketplace.visualstudio.com/items?itemName=patricklee.vsnotes), but this is not a Note taking tool, but
+VSNowm is a note taking extension for the VS Code. This is inspired many things by [VSNote](https://marketplace.visualstudio.com/items?itemName=patricklee.vsnotes), and [howm](https://howm.osdn.jp/).
 
-- [Howm](https://howm.osdn.jp/index.html) format task
+This is not just a note taking tool. It includes task management and free document like wiki.
+
+[screenshot](screenshot-1.png)
 
 # Features
 
 - Note taking tool. but not just a note.
+- Manage tasks same as notes.
 - Title is not required (but can be included). Start writing as soon as you think of it!
   - A first line of the content will be used as a title.
 - None of us can "categorize" a Note. Find the notes you want with full text search and links.
   - VSNowm uses `ripgrep` to quick full text search.
-- Works on Remote connection
-- Synchronization with Git
+- Works on Remote connection.
+- Synchronization with Git.
 
 # Quick Start
 
 - Install the extension from the VS Code Extension menu or click install on [this page]().
 - Open the command palette Ctrl/Cmd + Shift + p and type `VSNowm: Create note`
 - enjoy!
-  - Your first note stores in the `~/notes`. If you want to change, please setup the configurations.
+  - Your first note stores in the `~/notes`. If you want to change, you can setup the configurations.
 
 # Commands
 
@@ -32,9 +35,10 @@ VSNowm is a note taking extension for the VS Code. This is inspired many things 
   - default: "~/notes/"
   - You can add `vsnowm.defaultNoteRoot` to `settingsSync.ignoredSettings` in order to run on multiple place.
 - vsnowm.defaultNoteFilePath":
-  - default: "{year}/{month}/{day}/{dt}.{ext}",
+  - default: "{year}/{month}/{day}/{YYYY-MM-DD_HHmmss}.{ext}",
+  - While you don't care about actual filename, you don't need to change this.
 - vsnowm.defaultDateFormat
-  - default: "YYYY-MM-DDTHH:mm:ss"
+  - default: "YYYY-MM-DD_HH:mm:ss"
 - vsnowm.defaultExt
   - default: "md"
 - vsnowm.listRecentLimit
@@ -135,6 +139,7 @@ Date should be `YYYY-mm-dd`.
 
 - Can not specify number for Howm format.
 - Calculation on Howm format is not correct.
+  - TBH: not implmeneted yet
 
 ## Known Issues
 

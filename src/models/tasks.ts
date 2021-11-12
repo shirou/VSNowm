@@ -11,7 +11,7 @@ type TaskType =
   | "schedule"
   | "done";
 
-const HowmTaskRe = /\[(\d{4}-\d{2}-\d{2})\]([-+!~@])(\d*) (.*)/;
+const howmTaskRe = /\[(\d{4}-\d{2}-\d{2})\]([-+!~@])(\d*) (.*)/;
 
 export class TaskTreeItem extends vscode.TreeItem {
   public filePath: string;
@@ -74,7 +74,8 @@ const calcImportance = (
 };
 
 const parseHowmLine = (line: string) => {
-  const match = line.match(HowmTaskRe);
+  const match = line.match(howmTaskRe);
+  console.log(match);
 
   if (!match || match.length !== 5) {
     return {

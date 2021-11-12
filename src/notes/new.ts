@@ -29,7 +29,7 @@ export const newNote = () => {
   createNote(noteRoot);
 };
 
-const DefaultFileFormat = "YYYY-MM-DD_HHmmss";
+const defaultFileFormat = "{YYYY}-{MM}-{DD}_{HH}{mm}{ss}";
 
 const createNote = async (noteRoot: string) => {
   const config = vscode.workspace.getConfiguration("vsnowm");
@@ -48,7 +48,7 @@ const createNote = async (noteRoot: string) => {
     noteRoot,
     defaultNoteFilePath,
     defaultDateFormat,
-    DefaultFileFormat,
+    defaultFileFormat,
     defaultExt
   );
 

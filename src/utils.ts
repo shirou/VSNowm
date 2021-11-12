@@ -28,6 +28,7 @@ export const resolveFilePath = (
 
   const resolved = templateString(orig, getReplacer(fileFormat, ext, date));
 
+  console.log(fileFormat, resolved);
   return resolved;
 };
 
@@ -195,6 +196,13 @@ export const getTitle = async (filePath: string) => {
     return filePath;
   }
   const data = parsedFrontMatter.data as FrontMatterType;
+  console.log(
+    parsedFrontMatter.content.indexOf("\n"),
+    parsedFrontMatter.content.substring(
+      0,
+      parsedFrontMatter.content.indexOf("\n")
+    )
+  );
   return data.title
     ? data.title
     : parsedFrontMatter.content.substring(

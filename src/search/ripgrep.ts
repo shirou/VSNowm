@@ -92,7 +92,7 @@ export class RipGrep implements Searcher {
     const howmTaks = await this.searchHowmTasks(root);
 
     const vanillas = matches.map((match) => {
-      const label = match.lines.text.replace("- [ ]", "");
+      const label = match.lines.text.replace("- [ ] ", "");
 
       return new TaskTreeItem(
         label,
