@@ -26,9 +26,11 @@
     "onCommand:vsnowm.listTags",
     "onCommand:vsnowm.setupNotes",
     "onCommand:vsnowm.openNoteFolder",
+    "onCommand:vsnowm.openNote",
     "onCommand:vsnowm.sync",
     "onCommand:vsnowm.search",
-    "onView:vsnowm"
+    "onView:vsnowm.notes",
+    "onView:vsnowm.tasks"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -48,7 +50,7 @@
         },
         "vsnowm.defaultDateFormat": {
           "type": "string",
-          "default": "YYYY-MM-DDTHH:mm:ss",
+          "default": "YYYY-MM-DD HH:mm:ss",
           "description": "Formatted datetime."
         },
         "vsnowm.defaultExt": {
@@ -61,25 +63,10 @@
           "default": 15,
           "description": "Number of recent files to show when running command `List Notes`."
         },
-        "vsnowm.ignorePatterns": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "default": [
-            "^\\."
-          ],
-          "description": "Regular expressions for file names to ignore when parsing documents in note folder."
-        },
-        "vsnowm.treeviewHideTags": {
-          "type": "boolean",
-          "default": false,
-          "description": "Hide the tags section in the sidebar. Requires application restart."
-        },
-        "vsnowm.treeviewHideFiles": {
-          "type": "boolean",
-          "default": false,
-          "description": "Hide the files section in the sidebar. Requires application restart."
+        "vsnowm.autoSyncIntervalSec": {
+          "type": "number",
+          "default": 300,
+          "description": "Interval seconds between automatically sync with remote repo."
         }
       }
     },
@@ -93,31 +80,51 @@
         "title": "VSNowm: List recent notes"
       },
       {
-        "command": "vsnowm.listNotes",
-        "title": "VSNowm: Open note"
-      },
-      {
         "command": "vsnowm.listTags",
         "title": "VSNowm: List tags"
       },
       {
-        "command": "vsnowm.openNoteFolder",
-        "title": "VSNowm: Open Note Folder"
+        "command": "vsnowm.listTodos",
+        "title": "VSNowm: List TODO"
       },
       {
-        "command": "vsnowm.setupNotes",
-        "title": "VSNowm: Run setup"
+        "command": "vsnowm.openNote",
+        "title": "VSNowm: Open a note"
       },
       {
         "command": "vsnowm.search",
         "title": "VSNowm: Search notes"
       },
       {
-        "command": "vsnowm.refreshVSNotesView",
-        "title": "refresh",
+        "command": "vsnowm.searchLinks",
+        "title": "VSNowm: Search notes by Link"
+      },
+      {
+        "command": "vsnowm.sync",
+        "title": "VSNowm: Sync with remote"
+      },
+      {
+        "command": "vsnowm.refreshNotesView",
+        "title": "refresh Note",
         "icon": {
-          "light": "./media/light/sync.svg",
-          "dark": "./media/dark/sync.svg"
+          "light": "./media/icon/light/sync.svg",
+          "dark": "./media/icon/dark/sync.svg"
+        }
+      },
+      {
+        "command": "vsnowm.refreshLinksView",
+        "title": "refresh Links",
+        "icon": {
+          "light": "./media/icon/light/sync.svg",
+          "dark": "./media/icon/dark/sync.svg"
+        }
+      },
+      {
+        "command": "vsnowm.refreshTasksView",
+        "title": "refresh Tasks",
+        "icon": {
+          "light": "./media/icon/light/sync.svg",
+          "dark": "./media/icon/dark/sync.svg"
         }
       }
     ],
@@ -129,10 +136,18 @@
       }
     ],
     "views": {
-      "vsnotes": [
+      "vsnowm": [
         {
-          "id": "vsnowm",
-          "name": "VS Nowm"
+          "id": "vsnowm.notes",
+          "name": "Recent Notes"
+        },
+        {
+          "id": "vsnowm.tasks",
+          "name": "Tasks"
+        },
+        {
+          "id": "vsnowm.links",
+          "name": "Links"
         }
       ]
     },
@@ -141,16 +156,40 @@
         {
           "id": "vsnowm",
           "title": "VS Nowm",
-          "icon": "./media/icon/vsnotes_icon.svg"
+          "icon": "./media/icon/vsnowm_icon.svg"
         }
       ]
     },
     "menus": {
       "view/title": [
         {
-          "command": "vsnowm.refreshVSNotesView",
-          "when": "view == vsnowm",
+          "command": "vsnowm.refreshNotesView",
+          "when": "view == vsnowm.notes",
           "group": "navigation"
+        },
+        {
+          "command": "vsnowm.refreshTasksView",
+          "when": "view == vsnowm.tasks",
+          "group": "navigation"
+        },
+        {
+          "command": "vsnowm.refreshLinksView",
+          "when": "view == vsnowm.links",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "vsnowm.openNote",
+          "when": "view == vsnowm.notes && viewItem == note"
+        },
+        {
+          "command": "vsnowm.openNote",
+          "when": "view == vsnowm.tasks && viewItem == task"
+        },
+        {
+          "command": "vsnowm.searchLinks",
+          "when": "view == vsnowm.links && viewItem == link"
         }
       ]
     }
@@ -171,7 +210,8 @@
     "fs-extra": "^10.0.0",
     "gray-matter": "^4.0.3",
     "klaw": "^4.0.1",
-    "prettier": "^2.4.1"
+    "prettier": "^2.4.1",
+    "vscode-ripgrep": "^1.12.1"
   },
   "devDependencies": {
     "@types/fs-extra": "^9.0.13",
