@@ -4,6 +4,7 @@
   "description": "Personal note taking and task management tool",
   "version": "0.0.1",
   "publisher": "rrudi",
+  "preview": true,
   "engines": {
     "vscode": "^1.61.0"
   },
@@ -37,76 +38,71 @@
   "contributes": {
     "configuration": {
       "type": "object",
-      "title": "VSNowm Configuration",
+      "title": "%vsnowm.configuration.title%",
       "properties": {
         "vsnowm.defaultNoteRoot": {
           "type": "string",
           "default": "~/notes",
-          "description": "Path to directory to save notes. Use ~/ to denote a relative path from home folder. If you don't want to sync across machines, you can add vsnowm.defaultNoteRoot to settingsSync.ignoredSettings."
+          "description": ""
         },
         "vsnowm.defaultNoteFilePath": {
           "type": "string",
-          "default": "{year}/{month}/{day}/{dt}.{ext}",
-          "description": "Default note file path. defaultDateFormat is used on {dt}."
-        },
-        "vsnowm.defaultDateFormat": {
-          "type": "string",
-          "default": "YYYY-MM-DD HH:mm:ss",
-          "description": "Formatted datetime."
+          "default": "{year}/{month}/{day}/{year}-{month}-{day}_{hour}{mintue}{seconds}.{ext}",
+          "markdownDescription": "%vsnowm.configuration.defaultNoteRoot.markdownDescription%"
         },
         "vsnowm.defaultExt": {
           "type": "string",
           "default": "md",
-          "description": "Default note file extention."
+          "markdownDescription": "%vsnowm.configuration.defaultExt.markdownDescription%"
         },
         "vsnowm.listRecentLimit": {
           "type": "number",
           "default": 15,
-          "description": "Number of recent files to show when running command `List Notes`."
+          "markdownDescription": "%vsnowm.configuration.listRecentLimit.markdownDescription%"
         },
         "vsnowm.autoSyncIntervalSec": {
           "type": "number",
           "default": 300,
-          "description": "Interval seconds between automatically sync with remote repo."
+          "markdownDescription": "%vsnowm.configuration.autoSyncIntervalSec.markdownDescription%"
         }
       }
     },
     "commands": [
       {
         "command": "vsnowm.newNote",
-        "title": "VSNowm: Create a New Note"
+        "title": "%vsnowm.command.newNote.title%"
       },
       {
         "command": "vsnowm.listNotes",
-        "title": "VSNowm: List recent notes"
+        "title": "%vsnowm.command.listNotes.title%"
       },
       {
         "command": "vsnowm.listTags",
-        "title": "VSNowm: List tags"
+        "title": "%vsnowm.command.listTags.title%"
       },
       {
         "command": "vsnowm.listTodos",
-        "title": "VSNowm: List TODO"
+        "title": "%vsnowm.command.listTodos.title%"
       },
       {
         "command": "vsnowm.openNote",
-        "title": "VSNowm: Open a note"
+        "title": "%vsnowm.command.openNote.title%"
       },
       {
         "command": "vsnowm.search",
-        "title": "VSNowm: Search notes"
+        "title": "%vsnowm.command.search.title%"
       },
       {
         "command": "vsnowm.searchLinks",
-        "title": "VSNowm: Search notes by Link"
+        "title": "%vsnowm.command.searchLinks.title%"
       },
       {
         "command": "vsnowm.sync",
-        "title": "VSNowm: Sync with remote"
+        "title": "%vsnowm.command.sync.title%"
       },
       {
         "command": "vsnowm.refreshNotesView",
-        "title": "refresh Note",
+        "title": "%vsnowm.command.refreshNotesView.title%",
         "icon": {
           "light": "./media/icon/light/sync.svg",
           "dark": "./media/icon/dark/sync.svg"
@@ -114,7 +110,7 @@
       },
       {
         "command": "vsnowm.refreshLinksView",
-        "title": "refresh Links",
+        "title": "%vsnowm.command.refreshLinksView.title%",
         "icon": {
           "light": "./media/icon/light/sync.svg",
           "dark": "./media/icon/dark/sync.svg"
@@ -122,7 +118,7 @@
       },
       {
         "command": "vsnowm.refreshTasksView",
-        "title": "refresh Tasks",
+        "title": "%vsnowm.command.newNote.title%",
         "icon": {
           "light": "./media/icon/light/sync.svg",
           "dark": "./media/icon/dark/sync.svg"
@@ -140,15 +136,15 @@
       "vsnowm": [
         {
           "id": "vsnowm.notes",
-          "name": "Recent Notes"
+          "name": "%vsnowm.treeview.notes.title%"
         },
         {
           "id": "vsnowm.tasks",
-          "name": "Tasks"
+          "name": "%vsnowm.treeview.tasks.title%"
         },
         {
           "id": "vsnowm.links",
-          "name": "Links"
+          "name": "%vsnowm.treeview.links.title%"
         }
       ]
     },
@@ -156,7 +152,7 @@
       "activitybar": [
         {
           "id": "vsnowm",
-          "title": "VS Nowm",
+          "title": "VSNowm",
           "icon": "./media/icon/vsnowm_icon.svg"
         }
       ]
@@ -204,7 +200,7 @@
     "fix": "npm run fix:prettier && npm run fix:eslint",
     "fix:eslint": "eslint . --ext .ts --fix",
     "fix:prettier": "prettier --write .",
-    "test": "DISPLAY=:99.0 node ./out/test/runTest.js"
+    "test": "xvfb-run node ./out/test/runTest.js"
   },
   "dependencies": {
     "dayjs": "^1.10.7",
