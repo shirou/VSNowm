@@ -8,10 +8,12 @@ import { sync } from "./notes/sync";
 import { NotesTreeView } from "./treeview/notes";
 import { TasksTreeView } from "./treeview/tasks";
 import { LinksTreeView } from "./treeview/links";
-import { ActionLockDecorator } from "./deco/actionLock";
+import { ActionLock } from "./actionLock/actionLock";
+import { selectionUpdate } from "./actionLock/trigger";
 
 export const activate = (context: vscode.ExtensionContext) => {
   let activeEditor = vscode.window.activeTextEditor;
+  const acLock = new ActionLock("#ffff00");
 
   const nodeTv = new NotesTreeView();
   vscode.window.createTreeView("vsnowm.notes", {
@@ -44,27 +46,30 @@ export const activate = (context: vscode.ExtensionContext) => {
     vscode.commands.registerCommand("vsnowm.refreshLinksView", () =>
       linksTv.refresh()
     ),
-    vscode.commands.registerCommand("vsnowm.openNote", openUrl)
+    vscode.commands.registerCommand("vsnowm.openNote", openUrl),
+    vscode.window.onDidChangeTextEditorSelection((event) => {
+      selectionUpdate(acLock, event);
+    }),
+    vscode.commands.registerTextEditorCommand("vsnowm.doAction", (editor) => {
+      acLock.doAction(editor);
+    })
   );
 
-  /* Decorations */
-  const acDeco = new ActionLockDecorator("#ffff00");
-
+  /* ActionLock */
   vscode.window.onDidChangeActiveTextEditor(
     (editor) => {
       activeEditor = editor;
       if (editor) {
-        acDeco.changeActiveTextEditor(editor);
+        acLock.changeActiveTextEditor(editor);
       }
     },
     null,
     context.subscriptions
   );
-
   vscode.workspace.onDidChangeTextDocument(
     (event) => {
       if (activeEditor && event.document === activeEditor.document) {
-        acDeco.changeTextDocument(event);
+        acLock.changeTextDocument(event);
       }
     },
     null,

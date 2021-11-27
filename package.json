@@ -20,6 +20,7 @@
     "vsnowm",
     "notes",
     "note taking",
+    "memo",
     "task"
   ],
   "activationEvents": [
@@ -64,6 +65,11 @@
           "type": "number",
           "default": 300,
           "markdownDescription": "%vsnowm.configuration.autoSyncIntervalSec.markdownDescription%"
+        },
+        "vsnowm.underlineColor": {
+          "type": "string",
+          "default": "#5b7e91",
+          "description": "Underline color of the character that ActionLock fires (default color is 舛花色)"
         }
       }
     },
@@ -123,13 +129,22 @@
           "light": "./media/icon/light/sync.svg",
           "dark": "./media/icon/dark/sync.svg"
         }
+      },
+      {
+        "command": "vsnowm.doAction",
+        "title": "Execute ActionLock"
       }
     ],
     "keybindings": [
       {
         "command": "vsnowm.newNote",
-        "key": "",
-        "mac": ""
+        "key": "ctrl+shift+j",
+        "mac": "cmd+shift+j"
+      },
+      {
+        "command": "vsnowm.doAction",
+        "key": "Enter",
+        "when": "actionlock.isTrue"
       }
     ],
     "views": {
