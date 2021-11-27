@@ -75,7 +75,6 @@ const calcImportance = (
 
 const parseHowmLine = (line: string) => {
   const match = line.match(howmTaskRe);
-  console.log(match);
 
   if (!match || match.length !== 5) {
     return {

@@ -8,8 +8,11 @@ import { sync } from "./notes/sync";
 import { NotesTreeView } from "./treeview/notes";
 import { TasksTreeView } from "./treeview/tasks";
 import { LinksTreeView } from "./treeview/links";
+import { ActionLockDecorator } from "./deco/actionLock";
 
 export const activate = (context: vscode.ExtensionContext) => {
+  let activeEditor = vscode.window.activeTextEditor;
+
   const nodeTv = new NotesTreeView();
   vscode.window.createTreeView("vsnowm.notes", {
     treeDataProvider: nodeTv,
@@ -42,6 +45,30 @@ export const activate = (context: vscode.ExtensionContext) => {
       linksTv.refresh()
     ),
     vscode.commands.registerCommand("vsnowm.openNote", openUrl)
+  );
+
+  /* Decorations */
+  const acDeco = new ActionLockDecorator("#ffff00");
+
+  vscode.window.onDidChangeActiveTextEditor(
+    (editor) => {
+      activeEditor = editor;
+      if (editor) {
+        acDeco.changeActiveTextEditor(editor);
+      }
+    },
+    null,
+    context.subscriptions
+  );
+
+  vscode.workspace.onDidChangeTextDocument(
+    (event) => {
+      if (activeEditor && event.document === activeEditor.document) {
+        acDeco.changeTextDocument(event);
+      }
+    },
+    null,
+    context.subscriptions
   );
 };
 

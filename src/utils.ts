@@ -13,6 +13,10 @@ export const resolveRoot = (filepath?: string) => {
   return filepath.replace("~", os.homedir());
 };
 
+export const regexpEscape = (regexpString: string) => {
+  return regexpString.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
+};
+
 export const resolveFilePath = (
   root: string,
   notePath: string,
@@ -192,13 +196,6 @@ export const getTitle = async (filePath: string) => {
     return filePath;
   }
   const data = parsedFrontMatter.data as FrontMatterType;
-  console.log(
-    parsedFrontMatter.content.indexOf("\n"),
-    parsedFrontMatter.content.substring(
-      0,
-      parsedFrontMatter.content.indexOf("\n")
-    )
-  );
   return data.title
     ? data.title
     : parsedFrontMatter.content.substring(
