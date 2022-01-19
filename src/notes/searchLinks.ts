@@ -3,7 +3,7 @@ import * as vscode from "vscode";
 import { resolveRoot } from "../utils";
 import { newSearcher, Searcher } from "../search";
 import { openUrl } from "../notes/open";
-import { ConcatinatedView } from "../view/concatinatedView";
+import { ConcatinatedView } from "../view/ConcatinatedView";
 
 const getTarget = async (
   noteRoot: string,

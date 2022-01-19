@@ -2,11 +2,11 @@
   "name": "vsnowm",
   "displayName": "VSNowm",
   "description": "Personal note taking and task management tool",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "rrudi",
   "preview": true,
   "engines": {
-    "vscode": "^1.61.0"
+    "vscode": "^1.63.0"
   },
   "repository": {
     "type": "git",

@@ -10,7 +10,7 @@ import { TasksTreeView } from "./treeview/tasks";
 import { LinksTreeView } from "./treeview/links";
 import { ActionLock } from "./actionLock/actionLock";
 import { selectionUpdate } from "./actionLock/trigger";
-import { ConcatinatedView, getWebviewOptions } from "./view/concatinatedView";
+import { ConcatinatedView, getWebviewOptions } from "./view/ConcatinatedView";
 
 export const activate = (context: vscode.ExtensionContext) => {
   let activeEditor = vscode.window.activeTextEditor;
