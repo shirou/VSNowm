@@ -162,6 +162,7 @@ export class ActionLock {
     // currently use same
     const decorationType = vscode.window.createTextEditorDecorationType({
       textDecoration: "underline " + underlineColor,
+      color: { id: "textLink.foreground" },
     });
 
     const ret = new Map<ActionLockType, ActionLockDef>();

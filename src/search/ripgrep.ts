@@ -110,21 +110,25 @@ export class RipGrep implements Searcher {
     execBuf.push("-e", String.raw`'\[\[${link}\]\]'`);
 
     const matches = await this.exec(execBuf, root);
+    const items = await Promise.all(matches
+      .map(async (match) => {
+        const absPath = match.path.text;  // rg returns abs path
+        const title = await getTitle(absPath);
 
-    return matches
-      .map((match) => {
         // submatches might be multiple
         return match.submatches.map((m) => {
           return {
-            label: match.lines.text,
-            filePath: match.path.text, // rg returns abs path
+            label: title,
+            detail: m.match.text,
+            filePath: absPath,
             lineNumber: match.line_number - 1,
             columns: m.start,
           } as LinkQuickPickItem;
         });
-      })
-      .flat(); // should be flatten.
-  }
+      }));
+
+    return items.flat(); // should be flatten.
+    }
 
   async listLinks(root: string) {
     const execBuf = [`${rgPath}`, "--json"];

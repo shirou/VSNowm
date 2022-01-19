@@ -10,6 +10,7 @@ import { TasksTreeView } from "./treeview/tasks";
 import { LinksTreeView } from "./treeview/links";
 import { ActionLock } from "./actionLock/actionLock";
 import { selectionUpdate } from "./actionLock/trigger";
+import { ConcatinatedView, getWebviewOptions } from "./view/concatinatedView";
 
 export const activate = (context: vscode.ExtensionContext) => {
   let activeEditor = vscode.window.activeTextEditor;
@@ -54,6 +55,21 @@ export const activate = (context: vscode.ExtensionContext) => {
       acLock.doAction(editor);
     })
   );
+
+  if (vscode.window.registerWebviewPanelSerializer) {
+    // Make sure we register a serializer in activation event
+    vscode.window.registerWebviewPanelSerializer(ConcatinatedView.viewType, {
+      async deserializeWebviewPanel(
+        webviewPanel: vscode.WebviewPanel,
+        state: any
+      ) {
+        console.log(`Got state: ${state}`);
+        // Reset the webview options so we use latest uri for `localResourceRoots`.
+        webviewPanel.webview.options = getWebviewOptions(context.extensionUri);
+        ConcatinatedView.revive(webviewPanel, context.extensionUri);
+      },
+    });
+  }
 
   /* ActionLock */
   vscode.window.onDidChangeActiveTextEditor(
