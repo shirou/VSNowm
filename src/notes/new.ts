@@ -9,10 +9,11 @@ import {
 } from "../utils";
 
 const defaultTemplate = `---
-date: {dt}
+date: {year}-{month}-{day} {hour}:{mintue}:{second}
 categories:
   - note
 ---
+# 
 `;
 
 export const newNote = () => {
@@ -29,12 +30,9 @@ export const newNote = () => {
   createNote(noteRoot);
 };
 
-const defaultFileFormat = "{YYYY}-{MM}-{DD}_{HH}{mm}{ss}";
-
 const createNote = async (noteRoot: string) => {
   const config = vscode.workspace.getConfiguration("vsnowm");
   const defaultNoteFilePath = config.get("defaultNoteFilePath") as string;
-  const defaultDateFormat = config.get("defaultDateFormat") as string;
   const defaultExt = config.get("defaultExt") as string;
 
   if (!defaultNoteFilePath) {
@@ -47,8 +45,6 @@ const createNote = async (noteRoot: string) => {
   const absFilePath = resolveFilePath(
     noteRoot,
     defaultNoteFilePath,
-    defaultDateFormat,
-    defaultFileFormat,
     defaultExt
   );
 
@@ -65,7 +61,7 @@ const createNote = async (noteRoot: string) => {
   });
   console.log("Note created successfully: ", absFilePath);
   const template = await readTemplate(noteRoot);
-  const replacer = getReplacer(defaultDateFormat, defaultExt);
+  const replacer = getReplacer(defaultExt);
   const compiled = templateString(template!, replacer);
   editor.edit((edit) => {
     edit.insert(new vscode.Position(0, 0), compiled);

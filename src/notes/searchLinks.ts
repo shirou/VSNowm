@@ -3,6 +3,7 @@ import * as vscode from "vscode";
 import { resolveRoot } from "../utils";
 import { newSearcher, Searcher } from "../search";
 import { openUrl } from "../notes/open";
+import { ConcatinatedView } from "../view/concatinatedView";
 
 const getTarget = async (
   noteRoot: string,
@@ -32,14 +33,25 @@ export const searchLinks = async (link?: string) => {
   }
   const linkItems = await searcher.searchLinks(noteRoot, target);
 
+  /*
+  const uri = vscode.Uri.file("/home/shirou/");
+  ConcatinatedView.createOrShow(uri);
+  console.log(ConcatinatedView.currentPanel);
+  if (ConcatinatedView.currentPanel) {
+    ConcatinatedView.currentPanel.doRefactor();
+  }
+  */
+
   const selected = await vscode.window.showQuickPick(linkItems, {
     placeHolder: "select result",
     title: "results",
   });
   if (!selected) {
+    /*
     vscode.window.showInformationMessage(
       `"quickPick returnes undefined: ${target}`
     );
+    */
     return;
   }
   openUrl(

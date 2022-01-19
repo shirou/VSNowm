@@ -8,8 +8,14 @@ import { sync } from "./notes/sync";
 import { NotesTreeView } from "./treeview/notes";
 import { TasksTreeView } from "./treeview/tasks";
 import { LinksTreeView } from "./treeview/links";
+import { ActionLock } from "./actionLock/actionLock";
+import { selectionUpdate } from "./actionLock/trigger";
+import { ConcatinatedView, getWebviewOptions } from "./view/concatinatedView";
 
 export const activate = (context: vscode.ExtensionContext) => {
+  let activeEditor = vscode.window.activeTextEditor;
+  const acLock = new ActionLock("#ffff00");
+
   const nodeTv = new NotesTreeView();
   vscode.window.createTreeView("vsnowm.notes", {
     treeDataProvider: nodeTv,
@@ -41,7 +47,49 @@ export const activate = (context: vscode.ExtensionContext) => {
     vscode.commands.registerCommand("vsnowm.refreshLinksView", () =>
       linksTv.refresh()
     ),
-    vscode.commands.registerCommand("vsnowm.openNote", openUrl)
+    vscode.commands.registerCommand("vsnowm.openNote", openUrl),
+    vscode.window.onDidChangeTextEditorSelection((event) => {
+      selectionUpdate(acLock, event);
+    }),
+    vscode.commands.registerTextEditorCommand("vsnowm.doAction", (editor) => {
+      acLock.doAction(editor);
+    })
+  );
+
+  if (vscode.window.registerWebviewPanelSerializer) {
+    // Make sure we register a serializer in activation event
+    vscode.window.registerWebviewPanelSerializer(ConcatinatedView.viewType, {
+      async deserializeWebviewPanel(
+        webviewPanel: vscode.WebviewPanel,
+        state: any
+      ) {
+        console.log(`Got state: ${state}`);
+        // Reset the webview options so we use latest uri for `localResourceRoots`.
+        webviewPanel.webview.options = getWebviewOptions(context.extensionUri);
+        ConcatinatedView.revive(webviewPanel, context.extensionUri);
+      },
+    });
+  }
+
+  /* ActionLock */
+  vscode.window.onDidChangeActiveTextEditor(
+    (editor) => {
+      activeEditor = editor;
+      if (editor) {
+        acLock.changeActiveTextEditor(editor);
+      }
+    },
+    null,
+    context.subscriptions
+  );
+  vscode.workspace.onDidChangeTextDocument(
+    (event) => {
+      if (activeEditor && event.document === activeEditor.document) {
+        acLock.changeTextDocument(event);
+      }
+    },
+    null,
+    context.subscriptions
   );
 };
 

@@ -13,11 +13,13 @@ export const resolveRoot = (filepath?: string) => {
   return filepath.replace("~", os.homedir());
 };
 
+export const regexpEscape = (regexpString: string) => {
+  return regexpString.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
+};
+
 export const resolveFilePath = (
   root: string,
   notePath: string,
-  dtformat: string,
-  fileFormat: string,
   ext: string,
   date: dayjs.Dayjs | null = null
 ) => {
@@ -26,17 +28,13 @@ export const resolveFilePath = (
     date = dayjs();
   }
 
-  const resolved = templateString(orig, getReplacer(fileFormat, ext, date));
+  const resolved = templateString(orig, getReplacer(ext, date));
 
-  console.log(fileFormat, resolved);
+  console.log("resolved path: ", notePath, resolved);
   return resolved;
 };
 
-export const getReplacer = (
-  dtformat: string,
-  ext: string,
-  date?: dayjs.Dayjs
-) => {
+export const getReplacer = (ext: string, date?: dayjs.Dayjs) => {
   if (!date) {
     date = dayjs();
   }
@@ -46,9 +44,11 @@ export const getReplacer = (
     ["month", date.format("MM").toString()],
     ["day", date.format("DD").toString()],
     ["hour", date.format("HH").toString()],
+    ["hours", date.format("HH").toString()],
     ["mintue", date.format("mm").toString()],
+    ["mintues", date.format("mm").toString()],
     ["second", date.format("ss").toString()],
-    ["dt", date.format(dtformat)],
+    ["seconds", date.format("ss").toString()],
     ["ext", ext],
     ["YYYY", date.format("YYYY").toString()],
     ["MM", date.format("MM").toString()],
@@ -64,7 +64,7 @@ export const templateString = (
   replacer: Map<string, string>
 ) => {
   for (const [key, value] of replacer.entries()) {
-    content = content.replace(`{${key}}`, value);
+    content = content.replace(new RegExp(`\{${key}\}`, "g"), value);
   }
   return content;
 };
@@ -196,13 +196,6 @@ export const getTitle = async (filePath: string) => {
     return filePath;
   }
   const data = parsedFrontMatter.data as FrontMatterType;
-  console.log(
-    parsedFrontMatter.content.indexOf("\n"),
-    parsedFrontMatter.content.substring(
-      0,
-      parsedFrontMatter.content.indexOf("\n")
-    )
-  );
   return data.title
     ? data.title
     : parsedFrontMatter.content.substring(

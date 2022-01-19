@@ -1,6 +1,10 @@
+# !!IMPORTANT NOTICE!!
+
+THIS EXTENSION UNDER CONSTRUCTION! PLEASE DO NOT USE UNTIL RELEASED!
+
 # VSNowm README
 
-VSNowm is a note taking extension for the VS Code. This is inspired many things by [VSNote](https://marketplace.visualstudio.com/items?itemName=patricklee.vsnotes), and [howm](https://howm.osdn.jp/).
+VSNowm is a note taking extension for the VS Code. This is inspired many things by [VSNotes](https://marketplace.visualstudio.com/items?itemName=patricklee.vsnotes), and [howm](https://howm.osdn.jp/).
 
 This is not just a note taking tool. It includes task management and free document like wiki.
 
@@ -151,4 +155,10 @@ Initial release
 
 ## License
 
-MIT (same as VSNote)
+MIT (same as VSNotes)
+
+## Special Thanks
+
+- [VSNotes](https://github.com/patleeman/VSNotes)
+- [Howm](https://howm.osdn.jp/)
+- [ActonLock](https://github.com/nobuhito/vscode.actionlock)

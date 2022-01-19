@@ -31,7 +31,9 @@ export type RipGrepJsonMatch = {
     lines: {
       text: string;
     };
+    // eslint-disable-next-line
     line_number: number;
+    // eslint-disable-next-line
     absolute_offset: number;
     submatches: Array<RipgrepJsonSubmatch>;
   };

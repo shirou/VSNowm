@@ -1,0 +1,22 @@
+{
+  "vsnowm.treeview.tasks.title": "Tasks",
+  "vsnowm.treeview.notes.title": "Recent Notes",
+  "vsnowm.treeview.links.title": "Links",
+  "vsnowm.command.newNote.title": "VSNowm: Create a new note",
+  "vsnowm.command.listNotes.title": "VSNowm: List recent notes",
+  "vsnowm.command.listTags.title": "VSNowm: List links",
+  "vsnowm.command.listTodos.title": "VSNowm: List tasks",
+  "vsnowm.command.openNote.title": "VSNowm: Open a note",
+  "vsnowm.command.search.title": "VSNowm: Search notes",
+  "vsnowm.command.searchLinks.title": "VSNowm: Search notes by Link",
+  "vsnowm.command.sync.title": "VSNowm: Sync with remote repo",
+  "vsnowm.command.refreshNotesView.title": "VSNowm: refresh notes",
+  "vsnowm.command.refreshLinksView.title": "VSNowm: refresh links",
+  "vsnowm.command.refreshTasksView.title": "VSNowm: refresh tasks",
+  "vsnowm.configuration.title": "VSNowm Configuration",
+  "vsnowm.configuration.defaultNoteRoot.markdownDescription": "Path to directory to save notes. Use ~/ to denote a relative path from home folder. If you don't want to sync across machines, you can add vsnowm.defaultNoteRoot to settingsSync.ignoredSettings.",
+  "vsnowm.configuration.defaultNoteFilePath.markdownDescription": "Default note file path.",
+  "vsnowm.configuration.defaultExt.markdownDescription": "Default note file extention.",
+  "vsnowm.configuration.listRecentLimit.markdownDescription": "Number of recent files to show when running command `List Notes`.",
+  "vsnowm.configuration.autoSyncIntervalSec.markdownDescription": "Interval seconds between automatically sync with remote repo."
+}
